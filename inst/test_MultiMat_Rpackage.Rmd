@@ -1,25 +1,12 @@
 ---
 title: "Multi-Matrix Proteomics Analysis"
-author: "Yuliya Karpievitch"
+author: "Yuliya V Karpievitch"
 date: "10/30/2017"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-# library(gplots)
-# library(readr)
-# library(dplyr)
-# library(qvalue)
-# library(gdata) # for startsWith function
-# library(MultiMat)
-#
-# source('/Users/yuliya/yuliyaFiles/UWA/projects/MultiMat/MultiMat/R/EigenMS.R') # EigenMS normlazation
-# source('/Users/yuliya/yuliyaFiles/UWA/projects/MultiMat/MultiMat/R/MBImpute.R') # Model-based imputation
-# source('/Users/yuliya/yuliyaFiles/UWA/projects/MultiMat/MultiMat/R/peptideLevel_DE.R') 
-# source('/Users/yuliya/yuliyaFiles/UWA/projects/MultiMat/MultiMat/R/gtest.R') # G test for presence/absence comparison
-# source('/Users/yuliya/yuliyaFiles/UWA/projects/MultiMat/MultiMat/R/TwoPart_MultiMS.R') # Multi matrix analysis
-
 library('MultiMat')
 
 ```
