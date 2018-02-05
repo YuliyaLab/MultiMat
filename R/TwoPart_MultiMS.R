@@ -1,15 +1,12 @@
 ################################################################################
-# Function to conduct multi-biospecimen two-part test with permutation null distribution
-# Date: 22 July 2016
+# Function to conduct multi-sample two-part test with permutation null distribution
+# Initial implementation date: 22 July 2016
+# Releae data: February 2018
 ################################################################################
 # load required libraries
-library(MASS)
-library(multtest)
 
-# source("https://bioconductor.org/biocLite.R")
-# biocLite("rtracklayer")
 
-#' Subdivide data into intensiteis columns only
+#' Subdivide data into intensities columns only
 #'
 #' Subdivide a data frame of protein intensities and metadata into intensities only.
 #' No row names will be provided.
@@ -23,6 +20,7 @@ library(multtest)
 #' head(mm_peptides)
 #' intsCols = 8:13 # different from parameter names as R uses outer name spaces if variable is undefined
 #' m_logInts = make_intencities(mm_peptides, intsCols)  # will reuse the name
+#'
 #' @export
 make_intencities = function(mm, use_cols) {
   m_ints = mm[,use_cols] # Sequences should be unique
@@ -192,8 +190,12 @@ plot_volcano = function(FC, PV, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
 #' DE_res = peptideLevel_DE(imp_mm$y_imputed, grps, imp_mm$imp_prot.info,
 #'                          pr_ppos=2)
 #' plot_volcano_wLab(DE_res$FC, DE_res$BH_P_val, DE_res$ProtID, FC_cutoff=1.5, PV_cutoff=.05, figtitle='Mouse DE')
+#'
 #' @export
 plot_volcano_wLab = function(FC, PV, ProtID, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
+  library(ggrepel)
+  library(ggplot2)
+
   plotdata = data.frame(FC, PV, ProtID) # combine into 2 data frame
   ppos_rep = plotdata$PV == 0
   plotdata$PV[ppos_rep] = .000000001
