@@ -51,6 +51,5 @@ Order of T/F does not matter, can be used interchangeably,
    eg: c(TRUE, TRUE, FALSE, FALSE)
 }
 \examples{
-g.test = (c(TRUE, TRUE, FALSE, FALSE), as.factor(c('grp1', 'grp1', 'grp2', 'grp2') ) )
-g.test()
+g.test(c(TRUE, TRUE, FALSE, FALSE), as.factor(c('grp1', 'grp1', 'grp2', 'grp2')))
 }

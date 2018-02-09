@@ -4,7 +4,7 @@
 \alias{eigen_pi}
 \title{Compute PI - proportion of observations missing completely at random}
 \usage{
-eigen_pi(m, toplot = T)
+eigen_pi(m, toplot = TRUE)
 }
 \arguments{
 \item{m}{matrix of abundances, numsmaples x numpeptides}

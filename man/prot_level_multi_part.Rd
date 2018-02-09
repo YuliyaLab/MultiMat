@@ -101,16 +101,17 @@ treats[[1]] = grps
 treats[[2]] = grps
 protinfos[[1]] = imp_mm$imp_prot.info
 protinfos[[2]] = imp_hs$imp_prot.info
+nperm = 50
 comb_MBDE = prot_level_multi_part(mm_list=mms, treat=treats, prot.info=protinfos,
                                   prot_col_name='ProtID', nperm=nperm,
                                   setseed=123, dataset_suffix=c('MM', 'HS'))
 
 # Analysis for proteins only present in mouse, there are no proteins suitable for
-Model-Based analysis in human dataset
+# Model-Based analysis in human dataset
 subset_data = subset_proteins(mm_list=mms, prot.info=protinfos, 'MatchedID')  # grps will not change
 mm_dd_only = subset_data$sub_unique_prot.info[[1]]
 hs_dd_only = subset_data$sub_unique_prot.info[[2]]
 protinfos_mm_dd = subset_data$sub_unique_prot.info[[1]]
-DE_mCG_CG_mm_dd = peptideLevel_DE(mms_mm_dd, grps, prot.info=protinfos_mm_dd, pr_ppos=2)
+DE_mCG_CG_mm_dd = peptideLevel_DE(mm_dd_only, grps, prot.info=protinfos_mm_dd, pr_ppos=2)
 
 }

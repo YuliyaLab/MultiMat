@@ -107,6 +107,10 @@ ints_presAbs[[2]] = presAbs_dd[[1]][[2]] # HS
 protmeta_presAbs[[1]] = presAbs_dd[[2]][[1]]
 protmeta_presAbs[[2]] = presAbs_dd[[2]][[2]]
 
+treats = list()
+treats[[1]] = grps
+treats[[2]] = grps
+
 subset_presAbs = subset_proteins(mm_list=ints_presAbs, prot.info=protmeta_presAbs, 'MatchedID')
 
 nperm = 50  # set to 500+ for publication
