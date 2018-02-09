@@ -37,8 +37,7 @@
 #'   \item{expected}{matrix of expected counts}
 #' }
 #' @examples
-#' g.test = (c(TRUE, TRUE, FALSE, FALSE), as.factor(c('grp1', 'grp1', 'grp2', 'grp2') ) )
-#' g.test()
+#' g.test(c(TRUE, TRUE, FALSE, FALSE), as.factor(c('grp1', 'grp1', 'grp2', 'grp2')))
 #' @export
 g.test = function(x, y = NULL, correct="none",
   p = rep(1/length(x), length(x)), simulate.p.value = FALSE, B = 2000)

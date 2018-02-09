@@ -71,20 +71,20 @@ plot.eigentrends = function(svdr, title1){
 
   titles = paste("Trend ", 1:3, " (", Tk[1:3], "%)", sep = "")
   do.text = function(j) mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
-  range.y = range(as.numeric(v[,1:3]), na.rm=T)
+  range.y = range(as.numeric(v[,1:3]), na.rm=TRUE)
 
   toplot1_1 = as.numeric(v[,1])
   toplot1_2 = as.numeric(v[,2])
   toplot1_3 = as.numeric(v[,3])
 
-  plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=F, ylim=range.y)
+  plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=FALSE, ylim=range.y)
   do.text(1)
   abline(h=0, lty=3)
   title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
-  plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=F, ylim=range.y)
+  plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=FALSE, ylim=range.y)
   do.text(2)
   abline(h=0, lty=3)
-  plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=F, ylim=range.y)
+  plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=FALSE, ylim=range.y)
   do.text(3)
   abline(h=0, lty=3)
   return(Tk)
@@ -102,20 +102,20 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
   #  pe = signif(d/sum(d, na.rm=T)*100, 2)
   titles = paste("Trend ", pos1:(pos1+3), " (", Tk[pos1:(pos1+3)], "%)", sep = "")
   do.text = function(j) mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
-  range.y = range(as.numeric(v[,pos1:(pos1+3)]), na.rm=T)
+  range.y = range(as.numeric(v[,pos1:(pos1+3)]), na.rm=TRUE)
 
   toplot1_1 = as.numeric(v[,pos1])
   toplot1_2 = as.numeric(v[,(pos1+1)])
   toplot1_3 = as.numeric(v[,(pos1+2)])
 
-  plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=F, ylim=range.y)
+  plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=FALSE, ylim=range.y)
   do.text(1)
   abline(h=0, lty=3)
   title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
-  plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=F, ylim=range.y)
+  plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=FALSE, ylim=range.y)
   do.text(2)
   abline(h=0, lty=3)
-  plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=F, ylim=range.y)
+  plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=FALSE, ylim=range.y)
   do.text(3)
   abline(h=0, lty=3)
   return(Tk)
@@ -289,7 +289,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   }
   nobs = array(NA, c(nrow(m), length(unique(grp)))) # noobs = number of observations
 
-  print('Treatmenet groups:')
+  print('Treatment groups:')
   print(grp)
 
   for(ii in 1:nrow(m)) {
@@ -483,7 +483,7 @@ eig_norm2 = function(rv) {
   betahat_n = matrix(NA,nrow=dim(mtmp)[2],ncol=nrow(pres))
   rm(mtmp)
 
-  V0 = my.svd$v[,1:h.c,drop=F]   # residual eigenpeptides
+  V0 = my.svd$v[,1:h.c,drop=FALSE]   # residual eigenpeptides
 
   if(n.u.treatment == 1) { # got 1 treatment group
     for (ii in 1:nrow(pres)) {
@@ -557,7 +557,7 @@ eig_norm2 = function(rv) {
   final = y_resc # row names are assumed to be UNIQUE, peptide IDs are unique
 
   # rows with all observations present
-  complete_all = y_rescaled[rowSums(is.na(y_rescaled))==0,,drop=F]
+  complete_all = y_rescaled[rowSums(is.na(y_rescaled))==0,,drop=FALSE]
 
   #  x11() # make R open new figure window
   par(mfcol=c(3,2))
@@ -704,7 +704,7 @@ mmul = function(A, B){
 #######################################################################
 my.Psi = function(x, my.pi){
 # calculates Psi
-exp(log(1-my.pi)  + dnorm(x, 0, 1, log=T) - log(my.pi + (1 - my.pi) * pnorm(x, 0, 1) ))
+exp(log(1-my.pi)  + dnorm(x, 0, 1, log=TRUE) - log(my.pi + (1 - my.pi) * pnorm(x, 0, 1) ))
 }
 # end my.Psi
 

@@ -67,7 +67,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05, compute_pi=
   # calculate PI or use one passed in as parameter:
   if (compute_pi){
     print('Estimating Pi')
-  	my.pi = eigen_pi(mm, toplot=T)
+  	my.pi = eigen_pi(mm, toplot=TRUE)
   }
 
   # (From EigenMS) check if treatment is a 'factor' vs data.frame', i.e. single vs multiple factors
@@ -94,9 +94,9 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05, compute_pi=
     curr_prot.info = prot.info[prot.info[,pr_ppos]==prot,]
     idx.prot = which(prot.info[,1] %in% pmid.matches)  # do not obligate
                               # to be rownames, as those have to be Unique
-    y_raw = mm[idx.prot,,drop=F]
+    y_raw = mm[idx.prot,,drop=FALSE]
     cat(paste("Protein: ", prot, ": ", dim(y_raw)[1], " peptides (", kk, "/", length(all.proteins), ")", sep="" ))
-    y_info = prot.info[idx.prot,,drop=F]
+    y_info = prot.info[idx.prot,,drop=FALSE]
 
     if (nrow(y_raw) == 0) next  # yuliya: this should not happen here (NO observations)
 
@@ -115,16 +115,16 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05, compute_pi=
     colnames(n.present) = unique(treatment)
 
     for(jj in 1:n.u.treatment) {
-       n.present[,jj] = rowSums(!is.na(y_raw[,treatment==unique(treatment)[jj],drop=F]))
+       n.present[,jj] = rowSums(!is.na(y_raw[,treatment==unique(treatment)[jj],drop=FALSE]))
     }
     # remove peptides with completely missing group(s)
     present.min = apply(n.present, 1, min)
     ii = present.min > 0
-    y_raw = y_raw[ii,,drop=F] # reassign Y_raw to a submatrix of 1+ observations in each group
+    y_raw = y_raw[ii,,drop=FALSE] # reassign Y_raw to a submatrix of 1+ observations in each group
 
     # keep track of pepIDs and prIDs here...
     if (nrow(y_raw) == 0) next
-    c.guess = min(yy, na.rm=T)
+    c.guess = min(yy, na.rm=TRUE)
 	  peptide = rep(1:n.peptide, each=dim(data.frame(treatment))[1])
 
     # make column names for the n.present matrix
@@ -267,15 +267,15 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05, compute_pi=
 #'
 #' Contributed by Shelley Herbrich & Tom Taverner for Karpievitch et al. 2009
 #' @export
-eigen_pi = function(m, toplot=T)
+eigen_pi = function(m, toplot=TRUE)
 {
   # (1) compute 1) ave of the present values from each petide
   #             2) number of missing and present values for each peptide
 
   #remove completely missing rows
-  m = m[rowSums(m, na.rm=T)!=0,]
+  m = m[rowSums(m, na.rm=TRUE)!=0,]
 
-  pepmean = apply(m, 1, mean, na.rm=T)
+  pepmean = apply(m, 1, mean, na.rm=TRUE)
   propmiss = rowSums(is.na(m))/ncol(m)
 
   smooth_span = (0.4)
@@ -357,7 +357,7 @@ protein_var = function(Y_raw, treatment){
   # Y_temp = as.numeric(t(Y_temp))
   Y_temp = as.vector(t(Y_temp)) # yuliya, same as in filter now
   Y_temp[!is.na(Y_temp)] = Y_hat
-  Y_temp = matrix(Y_temp, nrow = n.peptide, byrow = T)
+  Y_temp = matrix(Y_temp, nrow = n.peptide, byrow = TRUE)
   Y_hat = Y_temp
   ee = Y_raw - Y_hat
 
@@ -369,7 +369,7 @@ protein_var = function(Y_raw, treatment){
 ################################################
 my.Psi = function(x, my.pi){
 # calculates Psi
-exp(log(1-my.pi)  + dnorm(x, 0, 1, log=T) - log(my.pi + (1 - my.pi) * pnorm(x, 0, 1) ))
+exp(log(1-my.pi)  + dnorm(x, 0, 1, log=TRUE) - log(my.pi + (1 - my.pi) * pnorm(x, 0, 1) ))
 }
 # end my.Psi
 

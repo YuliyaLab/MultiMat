@@ -66,9 +66,9 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
     } else {
       u_prot_info = rbind(u_prot_info, ttt)
     }
-    y_raw = mm[idx.prot,,drop=F]
+    y_raw = mm[idx.prot,,drop=FALSE]
 # cat(paste("Protein: ", prot, ": ", dim(y_raw)[1], " peptides (", kk, "/", length(all.proteins), ") \n", sep="" ))
-    y_info = prot.info[idx.prot,,drop=F]
+    y_info = prot.info[idx.prot,,drop=FALSE]
 
     n.peptide = nrow(y_raw)
     yy = as.vector(t(y_raw))
@@ -321,7 +321,7 @@ clip_protID_end = function(ids){
   prots = vector('character', length = ll)
   for(ii in 1:ll) {
     #if(ii %/% 1000 != 0) { print(ii) }
-    ppos = regexpr("-", ids[ii], fixed=T)[1]
+    ppos = regexpr("-", ids[ii], fixed=TRUE)[1]
     if(ppos != -1) {
       prots[ii] = substr(ids[ii], 1, (ppos-1) )
     } else {
