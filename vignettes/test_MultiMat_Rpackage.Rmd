@@ -8,24 +8,23 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library('MultiMat')
-
 ```
 
-## How to run MultiMatrix  pipeline: EigenMS, Model-Based Imputation, Differential Expression
+## How to run MultiMatrix pipeline: EigenMS, Model-Based Imputation, Differential Expression
 
 ### EigenMS normalization
 
-The data used in this examaple  is a subset of a proteomics experiment where
-peptide IDs (sequences) have been shuffled and protein and gene IDs were replced 
+The data used in this example is a subset of a proteomics experiment where
+peptide IDs (sequences) have been shuffled and protein and gene IDs were replaced 
 by fake 'Prot_#' name.
-This document provides an example of the code and data structures  that are 
+This document provides an example of the code and data structures that are 
 necessary to run Multi-Matrix analysis, inclusding EigenMS normalization, 
 Model-Based imputation and Multi-Matrix statistical analysis. 
 
 For non-proteomics data, such as metabolomics data, 2 columns with identical 
 information can be provided. 
 
-Start by loading the data and defining parameter prot.info, 2 column data frame 
+Start by loading the data and defining the parameter `prot.info`, a two column data frame 
 with IDs for metabolites or peptides in case of matabolites the 2 columns are identical. 
 For peptides 1st column must contain unique peptide ID (usually sequences)
 2nd column can contain protein IDs, (not used in EigenMS) and any other metadata 
@@ -42,7 +41,7 @@ m_logInts = make_intencities(hs_peptides, intsCols)
 
 # replace 0's with NA's as NA's are more appropriate for anlysis and log2 transform
 m_logInts = convert_log2(m_logInts) 
-metaCols = 1:7 # column indeces that contain metadata such as protein IDs and sequences
+metaCols = 1:7 # column indices that contain metadata such as protein IDs and sequences
 m_prot.info = make_meta(hs_peptides, metaCols)
 
 # m_prot.info - 2+ column data frame with pepIDs, here metabolite IDs
@@ -72,11 +71,11 @@ has more missing values.
 hs_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
 ```
 
-**Figure 2. Eigetrends for raw and residual peptide intensities in Human samples.** Dots at positions 
+**Figure 2. Eigentrends for raw and residual peptide intensities in Human samples.** Dots at positions 
 1-6 correspond to the 6 samples. Top trend in the Raw Data (left panel) shows a pattern 
 representative of the differences between the two groups. 
 Top trend in the Residual Data (right panel) shows that sample 2 and 5 have higher similarity to 
-each otehr, as well as, 1, 3, 4 and 6 whereas in reality samples 1-3 are from 
+each other, as well as, 1, 3, 4 and 6 whereas in reality samples 1-3 are from 
 the same treatment group and 3-6 are from the other.
 
 ```{r}
@@ -167,15 +166,15 @@ has more missing values.
 ```{r results = FALSE}
 mm_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
 ```
-**Figure 5. Eigetrends for raw and residual peptide intensities in Mouse samples.** 
+**Figure 5. Eigentrends for raw and residual peptide intensities in mouse samples.** 
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalizaed Data 
 (right panel) shows a pattern representative of the differences between the two groups 
 (eigen trends can be rotated around x-axis). 
 
-The eigntrend that explains most of the variation (45%) in the Mouse data is nto representative 
+The eigentrend that explains most of the variation (45%) in the Mouse data is not representative 
 of the treatment groupt differences (Figure 5). The second trend in the raw data explains only 22% of 
-the total variation that resambles treatmetn group differences necesitating normalization.
-variation in the data as is indicated by the percentage in the upper right corner. 
+the total variation that resembles treatment group differences necesitating normalization.
+Variation in the data as is indicated by the percentage in the upper right corner. 
 
 ```{r}
 mm_m_ints_eig1$h.c 
@@ -185,15 +184,14 @@ mm_m_ints_eig1$h.c
 mm_m_ints_norm_1bt = eig_norm2(rv=mm_m_ints_eig1)  # 700 x 560 resolution
 ```
 
-**Figure 6. Eigetrends for raw and normalized peptide intensities in Mouse samples with the effects of one bias trends removed.**
+**Figure 6. Eigentrends for raw and normalized peptide intensities in mouse samples with the effects of one bias trends removed.**
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalizaed Data 
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalizaed Data 
 (right panel) shows a pattern representative of the differences between the two groups. 
 
-The eigntrend that explains most of the variation (43%) in the normalized Mouse data is representative 
-of the treatment groupt differences. The second trend in the raw data explains only 27% of 
-the total variation and should be concidered as bias. 
-
+The eigentrend that explains most of the variation (43%) in the normalized mouse data is representative 
+of the treatment group differences. The second trend in the raw data explains only 27% of 
+the total variation and should be considered as bias. 
 
 ```{r}
 mm_m_ints_eig1$h.c = 2
@@ -204,12 +202,12 @@ mm_m_ints_norm = eig_norm2(rv=mm_m_ints_eig1)
 # 190 petides with no missing values were used for bais trend identification ($complete)
 ```
 
-**Figure 7. Eigetrends for raw and normalized peptide intensities in Mouse samples with the effects of two bias trends removed.**
-Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalizaed Data 
+**Figure 7. Eigentrends for raw and normalized peptide intensities in mouse samples with the effects of two bias trends removed.**
+Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalized Data 
 (right panel) shows a pattern representative of the differences between the two groups. 
 
-The eigntrend that explains most of the variation in the normalized Mouse data representative 
-of the treatment groupt differences now explains 58% of variation. The second trend in the 
+The eigentrend that explains most of the variation in the normalized mouse data representative 
+of the treatment group differences now explains 58% of variation. The second trend in the 
 normalized data explains less of variaion that in Figure 6 (24%) whch is still a bit high, 
 but we will use these data for analysis to avoid overfitting.  
 
@@ -230,9 +228,12 @@ cat("\\newpage")
 ```
 
 ## Model-based imputation 
+
 ***Human***
+
+Set up mata data and intensities to use for the imputation
+
 ```{r}
-# Set up mata data and intensities to use for the imputation
 hs_prot.info = hs_m_ints_norm$normalized[,metaCols]
 hs_norm_m =  hs_m_ints_norm$normalized[,intsCols]
 head(hs_prot.info)
@@ -242,15 +243,16 @@ length(unique(hs_prot.info$MatchedID)) # 59
 length(unique(hs_prot.info$ProtID))    # 59
 ```
 
+Impute based on ProtID - position in the matrix for the Protein Identifier 
+
 ```{r results = FALSE}
 set.seed(1213) 
-# impute based on ProtID - position in the matrix for the Protein Identifyer 
 imp_hs = MBimpute(hs_norm_m, grps, prot.info=hs_prot.info, pr_ppos=3, my.pi=0.05, 
                   compute_pi=FALSE, sseed=171717) # pi already computed...
 ```
-```{r}
 
-# check some nuumbers
+```{r}
+# check some numbers
 length(unique(imp_hs$imp_prot.info$MatchedID)) # 59 - MatchedID IDs
 length(unique(imp_hs$imp_prot.info$ProtID))    # 59 - Protein IDs
 length(unique(imp_hs$imp_prot.info$GeneID))    # 59 
@@ -271,8 +273,8 @@ plot_3_pep_trends_NOfile(as.matrix(hs_m_ints_eig1$m), hs_m_ints_eig1$prot.info,
 
 **Figure 8. All peptides within protein Prot32 in raw, noramlized, and imputed form.**
 
-
 ***Mouse***
+
 ```{r}
 mm_prot.info = mm_m_ints_norm$normalized[,1:7]
 mm_norm_m =  mm_m_ints_norm$normalized[,8:13]
@@ -291,8 +293,9 @@ imp_mm = MBimpute(mm_norm_m, grps, prot.info=mm_prot.info, pr_ppos=3, my.pi=0.05
                   compute_pi=FALSE, sseed=17171) # pi already computed...
 ```
 
+Check if returned number of rows corresponds to same number of rows in normalized data.
+
 ```{r}
-# check if returned number of rows corresponds to same number of rows in normalized data
 dim(imp_mm$imp_prot.info) # 787 x 7 - imputed peptides & 787 were normalized
 dim(imp_mm$y_imputed)     # 787 x 6
 ```
@@ -306,6 +309,7 @@ cat("\\newpage")
 ## Model-Based Differential Expression Analysis
 
 ***Combined Model-Based Differential Expression Analysis***
+
 ```{r}
 # make lists to pass as parameters in real data Use Mouse_gene_stable_ID as Protein ID 
 # OR Human
@@ -375,7 +379,6 @@ adjusted p-values (bottom left) do not look according to the theoretical distrib
 thus Benjamini-Hochberg adjusted is not appropriate. 
 
 ```{r}
-
 # horizontal streaks correspond to where a permutation test produces 0 or very small value
 # these are reset to improve visualization
 par(mfcol=c(1,1)) # Volcano will looc better for larger dataset... 
@@ -385,15 +388,13 @@ plot_volcano_wLab(comb_MBDE$FC, comb_MBDE$BH_P_val, comb_MBDE$GeneID, FC_cutoff=
 
 **Figure 10. Distribution of p-values and fold changes for combined multi-matrix analysis of Mouse and Human.**    
 
-
-    
 ***Human Only Model-Based Differential Expression Analysis***
+
 No Human (HS) specific protiens that can be analysed with Model-Based Differential Expression Analysis, 
 so no analysis for that subset. 
 
-
-
 ***Mouse Only Model-Based Differential Expression Analysis***
+
 ```{r}
 # subset_data contains "sub_unique_mm_list"  "sub_unique_prot.info" lists for each dataset 
 # in the order provided to subset function
@@ -424,11 +425,11 @@ cat("\\newpage")
 ## Presence-Ansence Analysis
 ***Combined Analysis***
 
-In the Presence-Ansence Analysis we use only proteins that are NOT in the normalized data. 
+In the Presence-Absence Analysis we use only proteins that are NOT in the normalized data. 
 For example, some peptides may have been eliminated for some proteins due to many missing values,
 but if some peptides remained in the Model-Based Diffential Expression Analysis, we do not analyse 
 a subset of pepties in the Presence-Absence Analysis as we would obtain 2 p-values.
-We strongly belieave that Model-Based Diffential Expression Analysis is a more sencitive approach 
+We strongly belieave that Model-Based Diffential Expression Analysis is a more sensitive approach 
 and thus it is a preferred method of analysis for proteins that have sufficient number of observations 
 in both treatment groups.
 
@@ -470,12 +471,12 @@ dim(subset_presAbs$sub_prot.info[[2]])
 
 ```{r results = FALSE}
 nperm = 50  # set to 500+ for publication 
-ptm <- proc.time()
+ptm = proc.time()
 presAbs_comb = prot_level_multiMat_PresAbs(mm_list=subset_presAbs$sub_mm_list,treat=treats, 
                                            prot.info=subset_presAbs$sub_prot.info, 
                                            prot_col_name='MatchedID', nperm=nperm, 
                                            setseed=123372, dataset_suffix=c('MM', 'HS') )
-proc.time() - ptm  #
+proc.time() - ptm
 ```
 
 ```{r}
