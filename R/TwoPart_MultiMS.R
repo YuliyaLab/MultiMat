@@ -345,10 +345,10 @@ plot_volcano_wLab = function(FC, PV, ProtID, FC_cutoff=2, PV_cutoff=.05, figtitl
 #' # Analysis for proteins only present in mouse, there are no proteins suitable for
 #' # Model-Based analysis in human dataset
 #' subset_data = subset_proteins(mm_list=mms, prot.info=protinfos, 'MatchedID')  # grps will not change
-#' mm_dd_only = subset_data$sub_unique_prot.info[[1]]
-#' hs_dd_only = subset_data$sub_unique_prot.info[[2]]
+#' mm_dd_only = subset_data$sub_unique_mm_list[[1]]
+#' hs_dd_only = subset_data$sub_unique_mm_list[[2]] # not using this variable, HS is in position 2
 #' protinfos_mm_dd = subset_data$sub_unique_prot.info[[1]]
-#' DE_mCG_CG_mm_dd = peptideLevel_DE(mm_dd_only, grps, prot.info=protinfos_mm_dd, pr_ppos=2)  # problem here
+#' DE_mCG_CG_mm_dd = peptideLevel_DE(mm_dd_only, grps, prot.info=protinfos_mm_dd, pr_ppos=2)
 #'
 #' @export
 prot_level_multi_part <- function(mm_list, treat, prot.info, prot_col_name, nperm=500, setseed=12345, dataset_suffix){
@@ -742,7 +742,7 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
 #' treats = list()
 #' treats[[1]] = grps
 #' treats[[2]] = grps
-#' 
+#'
 #' subset_presAbs = subset_proteins(mm_list=ints_presAbs, prot.info=protmeta_presAbs, 'MatchedID')
 #'
 #' nperm = 50  # set to 500+ for publication
