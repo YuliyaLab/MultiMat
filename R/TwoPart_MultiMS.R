@@ -49,7 +49,7 @@ make_meta = function(mm, use_cols) {
 
 #' Convert values in a matrix to log2 transfored values
 #'
-#' convert_log2 replaces 0's with NA's than does log2 transformation
+#' convert_log2 replaces 0's with NA's than does a log2 transformation
 #' Replacing 0's with NA's is the correct approach to Proteomics data analysis as 0's are not
 #' values that should be left n teh data where no observation was made, see citation below.
 #' Karpievitch et al. 2009 "Normalization of peak intensities in bottom-up MS-based
@@ -67,6 +67,16 @@ make_meta = function(mm, use_cols) {
 #'
 #' @return matrix of log2 transforemd intensities where 0's were replaced with NA's prior
 #'         to transformation
+#'
+#' @examples
+#' data(mm_peptides)
+#' head(mm_peptides)
+#' intsCols = 8:13
+#' metaCols = 1:7
+#' m_logInts = make_intencities(mm_peptides, intsCols)
+#' m_prot.info = make_meta(mm_peptides, metaCols)
+#' m_logInts = convert_log2(m_logInts) # 0's replaced with NAs and log2 transnform applied
+#'
 #' @export
 convert_log2 = function(mm, use_cols) {
   m_logInts = mm[,use_cols]
@@ -74,6 +84,7 @@ convert_log2 = function(mm, use_cols) {
   m_logInts = log2(m_logInts)
   return(m_logInts)
 }
+
 
 # function compute_missing
 # computes the nummber of missing and percent missing observations

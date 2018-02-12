@@ -129,6 +129,31 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
 #' @param gene_name gene ID to plot
 #' @param gene_name_col gene ID to plot column index
 #' @param mylabs sample labels to be plotted on x-axis
+#'
+#' @examples
+#'
+#' data("hs_peptides") # loads variable hs_peptides
+#' intsCols = 8:13 # column indeces that contain intensities
+#' m_logInts = make_intencities(hs_peptides, intsCols)
+#' # replace 0's with NA's as NA's are more appropriate for anlysis and log2 transform
+#' m_logInts = convert_log2(m_logInts)
+#' metaCols = 1:7 # column indices that contain metadata such as protein IDs and sequences
+#' m_prot.info = make_meta(hs_peptides, metaCols)
+#' grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG'))
+#' hs_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
+#' hs_m_ints_eig1$h.c = 2 # visually looks like there are 2 bias trends at least
+#' hs_m_ints_norm = eig_norm2(rv=hs_m_ints_eig1)
+#' hs_prot.info = hs_m_ints_norm$normalized[,metaCols]
+#' hs_norm_m =  hs_m_ints_norm$normalized[,intsCols]
+#' imp_hs = MBimpute(hs_norm_m, grps, prot.info=hs_prot.info, pr_ppos=3, my.pi=0.05,
+#'                   compute_pi=FALSE, sseed=171717) # pi estimated as 0.05
+#' mylabs = c( 'CG','CG','CG', 'mCG','mCG','mCG') # same as grps but this one is a string
+#' prot_to_plot = 'Prot32' # 43
+#' gene_to_plot = 'Gene32'
+#' plot_3_pep_trends_NOfile(as.matrix(hs_m_ints_eig1$m), hs_m_ints_eig1$prot.info,
+#'                          as.matrix(hs_norm_m), hs_prot.info, imp_hs$y_imputed,
+#'                          imp_hs$imp_prot.info, prot_to_plot, 3, gene_to_plot, 4, mylabs)
+#'
 #' @export
 plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m, sorted_prot.info,
                                     imp_mm, imp_prot.info, prot_to_plot, prot_to_plot_col,
@@ -201,7 +226,6 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m, sorted_prot.in
 #' @param colors what colors to plot peptide abundances as, most commonly should be
 #'        tretment groups
 #' @param mylabs sample labels to be plotted on x-axis
-#' @export
 plot_1prot = function(mm, prot.info, prot_to_plot, prot_to_plot_col,
                            gene_name, gene_name_col, colors, mylabs) {
   par(mfcol=c(1,1))

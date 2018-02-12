@@ -602,7 +602,7 @@ eig_norm2 = function(rv) {
 #'   \item{n.sv}{Number of significant surrogate variables}
 #'   \item{p.sv}{Significance for the returned surrogate variables}
 #' }
-#' @export
+#'
 sva.id = function(dat, n.u.treatment, lm.fm, B=500, sv.sig=0.05, seed=NULL)
 {
   print("Number of complete peptides (and samples) used in SVD")
