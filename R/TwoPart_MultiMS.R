@@ -202,15 +202,14 @@ plot_volcano = function(FC, PV, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
 #'                          pr_ppos=2)
 #' plot_volcano_wLab(DE_res$FC, DE_res$BH_P_val, DE_res$ProtID, FC_cutoff=1.5, PV_cutoff=.05, figtitle='Mouse DE')
 #'
+#' @import ggrepel ggplot2
+#' @importFrom dplyr mutate
 #' @export
 plot_volcano_wLab = function(FC, PV, ProtID, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
-  library(ggrepel)
-  library(ggplot2)
-
   plotdata = data.frame(FC, PV, ProtID) # combine into 2 data frame
   ppos_rep = plotdata$PV == 0
   plotdata$PV[ppos_rep] = .000000001
-  plotdata=plotdata %>% mutate(log_PV=-log10(PV))
+  plotdata = mutate(plotdata, log_PV=-log10(PV))
   plotdata$threshold = as.factor(abs(plotdata$FC) >= FC_cutoff & plotdata$PV < PV_cutoff)
   dim(plotdata)
 

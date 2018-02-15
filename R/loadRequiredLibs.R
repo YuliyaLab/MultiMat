@@ -9,6 +9,8 @@ devtools::use_package("multtest")
 devtools::use_package("readr")
 
 
-#' @import dplyr gdata ggplot2 ggrepel gtools multtest readr
+#' @import gdata ggplot2 ggrepel gtools multtest readr
+#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
 NULL
 # line containing NULL is needed for roxygen2
