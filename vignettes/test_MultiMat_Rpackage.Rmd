@@ -1,8 +1,12 @@
 ---
 title: "Multi-Matrix Proteomics Analysis"
 author: "Yuliya V Karpievitch"
-date: "10/30/2017"
-output: pdf_document
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteIndexEntry{Multi-Matrix Proteomics Analysis}
+  %\usepackage[UTF-8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
