@@ -3,7 +3,37 @@
 # Initial implementation date: 22 July 2016
 # Releae data: February 2018
 ################################################################################
-# load required libraries
+
+#' hs_peptides - peptide-level intensities for human
+#'
+#' A dataset containing the protein and petide information and peptide-level intensities
+#' for 6 samples: 3 CG and 3 mCG groups. There are 69 proteins.
+#' The columns are as follows:
+#'
+#' \itemize{
+#'   \item Sequence - peptide sequence - randomly chosen from a larger list of sequences
+#'   \item MatchedID - numeric ID that links proteins in the two datasets
+#'   \item ProtID - protein ID, artificial protein ID, eg. Prot1, Prot2, ...
+#'   \item GeneID - gene ID, artificial gene ID, eg. Gene1, Gene2, ...
+#'   \item ProtName - artificial Protein Name
+#'   \item ProtIDLong - long protein ID, full protein name, here artificially simulated
+#'   \item GeneIDLong - long gene ID, full gene name, here artificially simulated
+#'   \item CG1 - raw intensity column for sample 1 in CG group
+#'   \item CG2 - raw intensity column for sample 2 in CG group
+#'   \item CG3 - raw intensity column for sample 3 in CG group
+#'   \item mCG1 - raw intensity column for sample 1 in mCG group
+#'   \item mCG2 - raw intensity column for sample 2 in mCG group
+#'   \item mCG3 - raw intensity column for sample 3 in mCG group
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name hs_peptides
+#' @usage data(hs_peptides)
+#' @format A data frame with 695 rows and 13 colummns, compiring 7 columns of metadata
+#'        and 6 columns of peptide intensities. 69 proteins.
+NULL
+
 
 
 #' Subdivide data into intensities columns only
