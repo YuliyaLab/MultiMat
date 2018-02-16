@@ -12,7 +12,8 @@ eigen_pi(m, toplot = TRUE)
 \item{toplot}{TRUE/FALSE plot mean vs protportion missing curve and PI}
 }
 \value{
-pi estimate of the proportion of observations missing completely at random
+pi estimate of the proportion of
+        observations missing completely at random
 
 Contributed by Shelley Herbrich & Tom Taverner for Karpievitch et al. 2009
 }

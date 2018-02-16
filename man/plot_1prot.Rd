@@ -20,8 +20,9 @@ plot_1prot(mm, prot.info, prot_to_plot, prot_to_plot_col, gene_name,
 
 \item{gene_name_col}{gene ID to plot column index}
 
-\item{colors}{what colors to plot peptide abundances as, most commonly should be
-tretment groups}
+\item{colors}{what colors to plot peptide abundances as,
+most commonly should be
+treatment groups}
 
 \item{mylabs}{sample labels to be plotted on x-axis}
 }

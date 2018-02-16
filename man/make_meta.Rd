@@ -9,15 +9,16 @@ make_meta(mm, use_cols)
 \arguments{
 \item{mm}{data frame of metadata and intensities as a signle data frame}
 
-\item{use_cols}{column numbers to subset and return, no range checking on the column
+\item{use_cols}{column numbers to subset and return,
+no range checking on the column
 indeces is performed}
 }
 \value{
 m_ints data frame of intensities only
 }
 \description{
-Subdivide a data frame of protein metadata and intensities into a data frame of
-meta data only
+Subdivide a data frame of protein metadata and intensities
+into a data frame of meta data only
 }
 \examples{
 data(mm_peptides)

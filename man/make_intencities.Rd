@@ -7,22 +7,25 @@
 make_intencities(mm, use_cols)
 }
 \arguments{
-\item{mm}{data frame of metadata and intensities as a signle data frame}
+\item{mm}{data frame of metadata and intensities as a single data frame}
 
-\item{use_cols}{column numbers to subset and return, no range checking no range
+\item{use_cols}{column numbers to subset and return,
+no range checking no range
 checking on the column indeces is performed}
 }
 \value{
 m_ints data frame of intensities only
 }
 \description{
-Subdivide a data frame of protein intensities and metadata into intensities only.
+Subdivide a data frame of protein intensities and
+metadata into intensities only.
 No row names will be provided.
 }
 \examples{
 data(mm_peptides)
 head(mm_peptides)
-intsCols = 8:13 # different from parameter names as R uses outer name spaces if variable is undefined
-m_logInts = make_intencities(mm_peptides, intsCols)  # will reuse the name
+intsCols = 8:13 # different from parameter names as R uses outer name
+                # spaces if variable is undefined
+m_logInts = make_intencities(mm_peptides, intsCols)
 
 }

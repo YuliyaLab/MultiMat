@@ -7,8 +7,8 @@
 sva.id(dat, n.u.treatment, lm.fm, B = 500, sv.sig = 0.05, seed = NULL)
 }
 \arguments{
-\item{dat}{number of peptides/genes x number of samples matrix of expression data
-with no missing values}
+\item{dat}{number of peptides/genes x number of samples
+matrix of expression data with no missing values}
 
 \item{n.u.treatment}{number of treatment groups}
 
@@ -26,7 +26,9 @@ A data structure with the following values:
 }
 }
 \description{
-Surrogate Variable Analysis function used internatlly by eig_norm1 and eig_norm2
-Here we incorporate the model matrix from EigenMS normalization to find the significant
+Surrogate Variable Analysis function used internatlly by
+eig_norm1 and eig_norm2
+Here we incorporate the model matrix from EigenMS
+normalization to find the significant
 trends in the matrix of residuals.
 }
