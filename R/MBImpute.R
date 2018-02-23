@@ -98,7 +98,6 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
   all.proteins = unique(prot.info[,pr_ppos])
   y_imputed = NULL
   imp_prot.info = NULL
-  prot.info.tmp = NULL # def. not used #tim
   cat("Imputing...\n")
 
   for (kk in 1:length(all.proteins)){
@@ -112,7 +111,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     y_raw = mm[idx.prot,,drop=FALSE]
     cat(paste("Protein: ", prot, ": ", dim(y_raw)[1],
               " peptides (", kk, "/", length(all.proteins), ")", sep="" ))
-    y_info = prot.info[idx.prot,,drop=FALSE] # def. not used #tim
+    # y_info = prot.info[idx.prot,,drop=FALSE] # def. not used #tim
 
     # yuliya: this should not happen here (NO observations)
     if (nrow(y_raw) == 0) next
@@ -144,7 +143,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
 
     # keep track of pepIDs and prIDs here...
     if (nrow(y_raw) == 0) next
-    c.guess = min(yy, na.rm=TRUE) # def. not used #tim
+    # c.guess = min(yy, na.rm=TRUE) # def. not used #tim
 	  peptide = rep(1:n.peptide, each=dim(data.frame(treatment))[1])
 
     # make column names for the n.present matrix
@@ -168,7 +167,6 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     for (jj in 1:n.u.treatment){
       grp[jj] = sum(n.present[, jj])
     }
-    mpos = which.max(grp) # def. not used #tim
     pep_var = 0 # yuliya: was not declared in impute only
     go = protein_var(y_raw, treatment) # yuliya: function, see below
     overall_var = go$overall_var
@@ -207,8 +205,8 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     if (pep_var == 0) { pep_var = .0001 } # if overall var is 0...
     peptides.missing = rowSums(is.na(y_raw))
 
-    f.treatment = factor(rep(treatment, n.peptide)) # def. not used #tim
-    f.peptide = factor(peptide) # def. not used #tim
+    f.treatment = factor(rep(treatment, n.peptide)) # used below
+    f.peptide = factor(peptide) # used below
 
     # estimate rough model parameters
     # create model matrix for each protein
@@ -257,7 +255,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     choose.cen = runif(nn) < prob.cen
     set.cen = is.na(yy) & choose.cen
     set.mar = is.na(yy) &! choose.cen
-    kappa = my.pi + (1 - my.pi) * dnorm(zeta,0, 1) # def. not used #tim
+    # kappa = my.pi + (1 - my.pi) * dnorm(zeta,0, 1) # def. not used #tim
 
     # Imputation: Replace missing values with random numbers
     #             drawn from the estimated
@@ -359,10 +357,10 @@ protein_var = function(Y_raw, treatment){
       }
   }
 
-  peptides.missing = rowSums(is.na(Y_raw)) # def. not used #tim
+  # peptides.missing = rowSums(is.na(Y_raw)) # def. not used #tim
 
-  f.treatment = factor(rep(treatment, n.peptide)) # def. not used #tim
-  f.peptide = factor(peptide) # def. not used #tim
+  f.treatment = factor(rep(treatment, n.peptide)) # used in model.matrix below
+  f.peptide = factor(peptide) #  used in model.matrix below
 
   # estimate rough model parameters
   # create model matrix for each protein and
@@ -392,7 +390,7 @@ protein_var = function(Y_raw, treatment){
   Y_temp[!is.na(Y_temp)] = Y_hat
   Y_temp = matrix(Y_temp, nrow = n.peptide, byrow = TRUE)
   Y_hat = Y_temp
-  ee = Y_raw - Y_hat # def. not used #tim
+  # ee = Y_raw - Y_hat # def. not used #tim
 
   effects = X.c %*% beta
   resid = y.c - effects
@@ -419,35 +417,4 @@ rnorm.trunc = function (n, mu, sigma, lo=-Inf, hi=Inf){
   return (qnorm (u, mu, sigma))
 }
 
-# dialog for DanteR
-MBimpute.dialog = list(
-    title='Model-based Imputation',
-    m.dataframeItem=NULL, label='Data to impute',
-    signal = list("default", "get.dataset.factors",
-                  "treatment", user.data=list(include.primary=FALSE)),
-    signal = list("default",
-                  "get.dataset.row.metadata.fields", "protein_group",
-                  user.data=list(include.primary=FALSE)),
-    treatment.choiceItem=NULL, label='Factors',
-    protein_group.choiceItem = NULL, label = "Field Containing Proteins",
-    compute_pi.trueFalseItem=FALSE, label='Manually Estimate PI',
-    tooltip = "If this is checked, the user can set the estimated random missingness probability",
-    signal = c("default", "toggle.sensitive", "my.pi"),
-    my.pi.numericItem="0.05", label='PI', indent=10
-)
 
-get_pi = function (choice){
-		if (choice=="Yes"){
-		my.pi = my.pi
-	}else {
-		my.pi = run.dialog(enter_pi)$retval # what's run.dialog? MBimpute.dialog? #tim
-	}
-  return(my.pi)
-}
-
-enter_pi = function(new_val){
-	my.pi = new_val
-	return(my.pi)
-}
-enter_pi.dialog=list(title='New PI Value', new_val.numericItem=NULL,
-                     label='Enter new PI value:')

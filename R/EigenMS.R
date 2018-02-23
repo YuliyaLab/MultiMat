@@ -10,7 +10,7 @@
 #       Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM
 #       Submitted to PLoS ONE
 #
-# Here we allow multiple factors to be preserved in ANOVA 
+# Here we allow multiple factors to be preserved in ANOVA
 # model before identifying bais. This requires a bit of
 # thought on the side of the researchers, only few factors
 # should be 'preserved'. For example 'treatment group' is
@@ -252,7 +252,7 @@ makeLMFormula = function(eff, var_name='') {
 #'              will be written to that file name
 #' @return A structure with multiple components
 #' \describe{
-#'   \item{m, treatment, prot.info, grp}{initial parameters passed into the 
+#'   \item{m, treatment, prot.info, grp}{initial parameters passed into the
 #'        function, returned for future reference}
 #'   \item{my.svd}{matrices produced by SVD}
 #'   \item{pres}{matrix of peptides that can be normalized, i.e. have enough
@@ -343,9 +343,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   # now 'remove' peptides with missing groups
   present.min = apply(nobs, 1, min) # number present in each group
   ii = present.min == 0   # 1+ obs present in ALL of the groups
-  # not used, one value of how many peptides have 1+ grp missing completely
-  nmiss = sum(present.min == 0) # def. not used #tim
-  pmiss = rbind(m[ii,]) # these have 1+ grp missing !!!!
+  pmiss = rbind(m[ii,]) # these have 1+ grp missing
   # rownames must be UNIQUE, if have possible duplicates: use 'ii' ?
   rownames(pmiss) = prot.info[ii,1]  # set rownames,
 
@@ -385,9 +383,6 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   # contrasts will fail if have only 1 group, thus have else
   if(n.u.treatment > 1) {
     print('Got 2+ treatment grps')
-    # check to see if we have multiple factors
-	  grpdim = dim(treatment) # def. not used #tim
-
 	  # using general function that can accomodate for 1+ number of factors
 	  lm.fm = makeLMFormula(treatment, 'TREAT')
     TREAT = treatment
@@ -402,7 +397,6 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
 
     mod.c = model.matrix(lm.fm$lm.formula, data=TREAT,
                          eval(parse(text=lm.fm$lm.params)))
-	  Y.c = as.matrix(complete) # def. not used #tim
 	  options(warn = -1)
 
     # use lm() to get residuals
@@ -421,7 +415,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   print('Computing SVD, estimating Eigentrends...')
   # residuals are centered around 0, here center samples not peptides/metabolites
   # centering is basic normalization
-  
+
   # t(scale(t(R.c), center = TRUE, scale = FALSE))
   R.c_center = scale(R.c, center = TRUE, scale = FALSE)
   my.svd = svd(R.c_center)
@@ -512,13 +506,10 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
 eig_norm2 = function(rv) {
   # yuliya: use pres matrix, as we cannot deal with m anyways,
   # need to narrow it down to 'complete' peptides
-  m = rv$pres # def. not used #tim
   treatment = rv$treatment
   my.svd = rv$my.svd
   pres = rv$pres
-  n.treatment = rv$n.treatment # def. not used #tim
   n.u.treatment = rv$n.u.treatment
-  numFact = dim(rv$treatment)[2] # def. not used #tim
   print(paste('Unique number of treatment combinations:', n.u.treatment) )
   h.c = rv$h.c
   present = rv$present
@@ -543,7 +534,6 @@ eig_norm2 = function(rv) {
   newR = array(NA, c(nrow(pres), ncol(pres))) #, n.treatment))
   norm_m = array(NA, c(nrow(pres), ncol(pres))) # , n.treatment))
   numsamp = dim(pres)[2]
-  numpep = dim(pres)[1] # def. not used #tim 
   betahat_n = matrix(NA,nrow=dim(mtmp)[2],ncol=nrow(pres))
   rm(mtmp)
 
@@ -596,11 +586,10 @@ eig_norm2 = function(rv) {
           bias[pos] = resm[pos] %*% V0[pos,] %*% t(V0[pos,])
           norm_m[ii, ] = as.numeric(pep - bias)
 
-          # yuliya:  but newR should be computed on Normalized data
+          # yuliya: newR should be computed on Normalized data
           resm_n = rep(NA, numsamp)
           bhat_n =  solve(t(modt) %*% modt) %*% t(modt) %*% norm_m[ii, pos]
           betahat_n[,ii] = bhat_n
-          ceffects_n = modt %*% bhat_n # def. not used #tim
           resm_n[pos] = norm_m[ii,pos] - ceffects
           newR[ii, ] = resm_n
         } else {
@@ -611,7 +600,7 @@ eig_norm2 = function(rv) {
       } else {
         print(paste('got exception at peptide:', ii))
         # keep track of peptides that threw exeptions, check why...
-        exPeps[ii] = 1 
+        exPeps[ii] = 1
       }
     }
   } # end else - got 2+ treatment groups
@@ -644,7 +633,6 @@ eig_norm2 = function(rv) {
   print("Done with normalization!!!")
   colnames(V0) =  paste("Trend", 1:ncol(V0), sep="_")
 
-  maxrange = NULL # no rescaling # data.matrix(maxrange) # def. not used #tim
   return(list(normalized=final, norm_m=y_rescaled, eigentrends=V0,
               norm.svd=toplot3, exPeps=exPeps))
 } # end function eig_norm2
@@ -684,9 +672,8 @@ sva.id = function(dat, n.u.treatment, lm.fm, B=500, sv.sig=0.05, seed=NULL)
 
 
   if(!is.null(seed))  { set.seed(seed) }
-  warn = NULL # def. not used #tim 
+  # warn = NULL # def. not used # tim
   n = ncol(dat)
-  m = nrow(dat) # def. not used #tim 
 
   ncomp = n.u.treatment # JULY 2013: as.numeric(n.u.treatment)
   print(paste("Number of treatment groups (in svd.id): ", ncomp))

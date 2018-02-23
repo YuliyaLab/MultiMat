@@ -75,15 +75,11 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
       u_prot_info = rbind(u_prot_info, ttt)
     }
     y_raw = mm[idx.prot,,drop=FALSE]
-# cat(paste("Protein: ", prot, ": ", dim(y_raw)[1],
-# " peptides (", kk, "/", length(all.proteins), ") \n", sep="" ))
-    y_info = prot.info[idx.prot,,drop=FALSE] # def. not used #tim
-
     n.peptide = nrow(y_raw)
     yy = as.vector(t(y_raw))
-    n = length(yy) # def. not used #tim 
-    peptide = as.factor(rep(1:n.peptide, each=dim(data.frame(treatment))[1])) # def. not used #tim
-    # yuliya:  keep track of prIDs here...
+    ## n = length(yy)
+    peptide = as.factor(rep(1:n.peptide, each=dim(data.frame(treatment))[1])) # used below
+    # keep track of prIDs here
     curr_prot.info = curr_prot.info[kk,] # possibly a subset
 
     # good to know how many peptides were in a given protein
@@ -154,7 +150,7 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
 #' # for anlysis and log2 transform
 #' m_logInts = convert_log2(m_logInts)
 #' # column indices that contain metadata such as protein IDs and sequences
-#' metaCols = 1:7 
+#' metaCols = 1:7
 #' m_prot.info = make_meta(hs_peptides, metaCols)
 #' grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG'))
 #' hs_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
@@ -191,7 +187,7 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
   }
   # take a Raw data, need these for y-limits
   # unsorted but OK, peptides will be in different order
-  ppos2 = prot.info[,prot_to_plot_col] == prot_to_plot 
+  ppos2 = prot.info[,prot_to_plot_col] == prot_to_plot
   tmp2 = mm[ppos2,]
   if(sum(ppos2) == 1) { # only 1 row, duplicate 1 row...
     tmp2 = rbind(tmp2,tmp2)

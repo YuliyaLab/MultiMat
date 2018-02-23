@@ -13,7 +13,8 @@
 #'
 #' \itemize{
 #'   \item Sequence - peptide sequence - randomly chosen from a larger list of sequences
-#'   \item MatchedID - numeric ID that links proteins in the two datasets
+#'   \item MatchedID - numeric ID that links proteins in the two datasets,
+#'         unnecessary if datasets are for the same species
 #'   \item ProtID - protein ID, artificial protein ID, eg. Prot1, Prot2, ...
 #'   \item GeneID - gene ID, artificial gene ID, eg. Gene1, Gene2, ...
 #'   \item ProtName - artificial Protein Name
@@ -32,6 +33,37 @@
 #' @name hs_peptides
 #' @usage data(hs_peptides)
 #' @format A data frame with 695 rows and 13 colummns, compiring 7 columns of metadata
+#'        and 6 columns of peptide intensities. 69 proteins.
+NULL
+
+#' mm_peptides - peptide-level intensities for mouse
+#'
+#' A dataset containing the protein and petide information and peptide-level intensities
+#' for 6 samples: 3 CG and 3 mCG groups. There are 69 proteins.
+#' The columns are as follows:
+#'
+#' \itemize{
+#'   \item Sequence - peptide sequence - randomly chosen from a larger list of sequences
+#'   \item MatchedID - numeric ID that links proteins in the two datasets,
+#'         unnecessary if datasets are for the same species
+#'   \item ProtID - protein ID, artificial protein ID, eg. Prot1, Prot2, ...
+#'   \item GeneID - gene ID, artificial gene ID, eg. Gene1, Gene2, ...
+#'   \item ProtName - artificial Protein Name
+#'   \item ProtIDLong - long protein ID, full protein name, here artificially simulated
+#'   \item GeneIDLong - long gene ID, full gene name, here artificially simulated
+#'   \item CG1 - raw intensity column for sample 1 in CG group
+#'   \item CG2 - raw intensity column for sample 2 in CG group
+#'   \item CG3 - raw intensity column for sample 3 in CG group
+#'   \item mCG1 - raw intensity column for sample 1 in mCG group
+#'   \item mCG2 - raw intensity column for sample 2 in mCG group
+#'   \item mCG3 - raw intensity column for sample 3 in mCG group
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name mm_peptides
+#' @usage data(mm_peptides)
+#' @format A data frame with 1102 rows and 13 colummns, compiring 7 columns of metadata
 #'        and 6 columns of peptide intensities. 69 proteins.
 NULL
 
@@ -438,7 +470,7 @@ plot_volcano_wLab = function(FC, PV, ProtID,
 #' # Model-Based analysis in human dataset
 #' subset_data = subset_proteins(mm_list=mms, prot.info=protinfos, 'MatchedID')
 #' mm_dd_only = subset_data$sub_unique_mm_list[[1]]
-#' hs_dd_only = subset_data$sub_unique_mm_list[[2]] 
+#' hs_dd_only = subset_data$sub_unique_mm_list[[2]]
 #' protinfos_mm_dd = subset_data$sub_unique_prot.info[[1]]
 #' DE_mCG_CG_mm_dd = peptideLevel_DE(mm_dd_only, grps,
 #'                                   prot.info=protinfos_mm_dd, pr_ppos=2)
@@ -449,10 +481,10 @@ prot_level_multi_part <- function(mm_list, treat, prot.info,
                                   dataset_suffix){
   # select proteins that were detected in each experiment
   # make a list of unique protein IDs for each matrix in the list mm_list
-    # grps will not change
-  subset_data = subset_proteins(mm_list=mms, prot.info=protinfos, prot_col_name) # check this: mms and protinfos not defined (I assume meant to be mm_list and prot.info?)#tim
+  # grps will not change
+  subset_data = subset_proteins(mm_list=mm_list, prot.info=prot.info, prot_col_name)
   # names(subset_data)
-  # "sub_mm_list"  "sub_prot.info"  "sub_unique_mm_list" 
+  # "sub_mm_list"  "sub_prot.info"  "sub_unique_mm_list"
   # "sub_unique_prot.info"  "common_list"
 
   print('Computing statistics')
@@ -471,7 +503,7 @@ prot_level_multi_part <- function(mm_list, treat, prot.info,
                         pr_ppos=pos_prot_id_col)
   tstat_all = list()
   tstat_all[[1]] = tmp
-  # t_value si stored in col 5:  ProtID  FC  p-val  
+  # t_value si stored in col 5:  ProtID  FC  p-val
   # BH_p-val  t_value   num_peptides
   tstat = as.double(tmp[,5])
   FCs = as.double(tmp[,2])
@@ -701,49 +733,40 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
       u_prot_info = rbind(u_prot_info, ttt)
     }
     y_raw = mm[idx.prot,,drop=FALSE]
-    # cat(paste("Protein: ", prot, ": ", dim(y_raw)[1],
-    # " peptides (", kk, "/", length(all.proteins), ") \n", sep="" ))
-    y_info = prot.info[idx.prot,,drop=FALSE] # def. not used #tim
-
     n.peptide = nrow(y_raw)
     yy = as.vector(t(y_raw))
     nn = length(yy)
-    # do not need peptide for g-test, but will need treatment
-    peptide = as.factor(rep(1:n.peptide, each=dim(data.frame(treatment))[1])) # def. not used #tim
-    # yuliya:  keep track of prIDs here...
+    # keep track of prIDs here...
     curr_prot.info = curr_prot.info[kk,] # possibly a subset
     # good to know how many peptides were in a given protein
     y_out[kk,5] = n.peptide
 
-    #if (n.peptide != 1){
-      # replicate treatment for # peptides
-      treatment_hold = treatment
-      treatment = rep(treatment, times=n.peptide)
-      # use g-test to compute stat significance in differences between groups
-      xx = is.na(yy)
+    # replicate treatment for # peptides
+    treatment_hold = treatment
+    treatment = rep(treatment, times=n.peptide)
+    # use g-test to compute stat significance in differences between groups
+    xx = is.na(yy)
 
-      treatsX = unique(treatment)
-      if(sum(xx) < nn & sum(xx) > 0) {
-        res = g.test(xx,treatment)
-        # colnames(y_out) = c('XsqDF', 'p-val', 'BH_p-val',
-        # 'g_value', 'num_peptides')
-        y_out[kk,2] = res$p.value
-        y_out[kk,1] = res$parameter
-        y_out[kk,4] = res$statistic
-      } else {
-        # colnames(y_out) = c('XsqDF', 'p-val',
-          # 'BH_p-val', 'g_value', 'num_peptides')
-        y_out[kk,2] = 2
-        # all values are OUT of RANGE of proper results, will be
-        # used to flag (and remove) all preent or all absent values
-        y_out[kk,1] = 2
-        y_out[kk,4] = 2 # more likely to have all NAs
-      }
-      # count # of missing values in each tretment,
-      # will vary depending on the number of peptides
-      nummiss[kk,1] = sum(xx[treatment==treatsX[1]]==TRUE)
-      nummiss[kk,2] = sum(xx[treatment==treatsX[2]]==TRUE)
-      treatment = treatment_hold
+    treatsX = unique(treatment)
+    if(sum(xx) < nn & sum(xx) > 0) {
+      res = g.test(xx,treatment)
+      # colnames(y_out) = c('XsqDF', 'p-val', 'BH_p-val',
+      # 'g_value', 'num_peptides')
+      y_out[kk,2] = res$p.value
+      y_out[kk,1] = res$parameter
+      y_out[kk,4] = res$statistic
+    } else {
+      y_out[kk,2] = 2
+      # all values are OUT of RANGE of proper results, will be
+      # used to flag (and remove) all preent or all absent values
+      y_out[kk,1] = 2
+      y_out[kk,4] = 2 # more likely to have all NAs
+    }
+    # count # of missing values in each tretment,
+    # will vary depending on the number of peptides
+    nummiss[kk,1] = sum(xx[treatment==treatsX[1]]==TRUE)
+    nummiss[kk,2] = sum(xx[treatment==treatsX[2]]==TRUE)
+    treatment = treatment_hold
   } # end for each protein
 
   colnames(y_out) = c('FC', 'P_val', 'BH_P_val', 'statistic', 'num_peptides')
@@ -761,9 +784,8 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
   # HERE make a dataframe to be returned -
   # add protein names as 1st col in a data frame
   DE_res = data.frame(all.proteins, y_out, stringsAsFactors=FALSE)
-  de_ret$DE_res = DE_res # data.frame(DE_res, stringsAsFactors=FALSE)
+  de_ret$DE_res = DE_res
   de_ret$prot.info = u_prot_info
-  # de_ret$nummiss = nummiss
 
   num_obs =  matrix(0, length(all.proteins), numgrps)
   for(ii in 1:numgrps) {
@@ -813,7 +835,7 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
 #' @return a data frame with the following columns:
 #' \describe{
 #'   \item{protIDused}{protein metadata, peptide sequence if was
-#'        passed in as one of the columns is the first peptide 
+#'        passed in as one of the columns is the first peptide
 #'        equence encountered in the data for that protein}
 #'   \item{FCs}{Avegares across all datasets of the approximation
 #'        of the fold change computed as percent missing observations
@@ -917,7 +939,7 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
                                 prot.info=prot.info,
                                 prot_col_name)  # grps will not change
   # names(subset_data)
-  # "sub_mm_list"  "sub_prot.info" 
+  # "sub_mm_list"  "sub_prot.info"
   # "sub_unique_mm_list"  "sub_unique_prot.info"  "common_list"
 
   print('Computing statistics')
@@ -932,12 +954,12 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   # mmsCA[[1]], treatsCA[[1]], protinfos[[1]], pr_ppos=2)
   tmp = peptideLevel_PresAbsDE(sub_mm_list[[1]],
                                treat[[1]], sub_prot.info[[1]],
-                               pr_ppos=pos_prot_id_col) 
+                               pr_ppos=pos_prot_id_col)
   # tmp = peptideLevel_DE(sub_mm_list[[1]], treat[[1]],
   # sub_prot.info[[1]], pr_ppos=2)
   tstat_all = list()
   tstat_all[[1]] = tmp
-  # t_value si stored in col 5:  ProtID  FC  p-val  
+  # t_value si stored in col 5:  ProtID  FC  p-val
   # BH_p-val  t_value   num_peptides
   tstat = as.double(tmp[,5])
   FCs = as.double(tmp[,2])
@@ -1046,9 +1068,9 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   # Here we return BH adjusted p-values which we do not
   # recommend using unless the number
   # of tests performed is in teh thoughsands.
-  mmin = min(p_vals) # def. not used #tim
-  mmax = max(p_vals) # def. not used #tim
-  # adj_PV = (p_vals - mmin) / (mmax-mmin)
+  ## mmin = min(p_vals)
+  ## mmax = max(p_vals)
+  ## adj_PV = (p_vals - mmin) / (mmax-mmin)
   adj_PV = p.adjust(p_vals, method = 'BH')
   FC = rowMeans(FCs)
 
@@ -1133,7 +1155,7 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
 #' # Load human dataset
 #' data(hs_peptides)
 #' head(hs_peptides)
-#' intsCols = 8:13 
+#' intsCols = 8:13
 #' metaCols = 1:7 # reusing this variable
 #' m_logInts = make_intencities(hs_peptides, intsCols)  # will reuse the name
 #' m_prot.info = make_meta(hs_peptides, metaCols)

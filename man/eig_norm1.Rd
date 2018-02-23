@@ -30,7 +30,7 @@ will be written to that file name}
 \value{
 A structure with multiple components
 \describe{
-  \item{m, treatment, prot.info, grp}{initial parameters passed into the 
+  \item{m, treatment, prot.info, grp}{initial parameters passed into the
        function, returned for future reference}
   \item{my.svd}{matrices produced by SVD}
   \item{pres}{matrix of peptides that can be normalized, i.e. have enough

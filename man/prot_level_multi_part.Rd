@@ -131,7 +131,7 @@ comb_MBDE = prot_level_multi_part(mm_list=mms, treat=treats,
 # Model-Based analysis in human dataset
 subset_data = subset_proteins(mm_list=mms, prot.info=protinfos, 'MatchedID')
 mm_dd_only = subset_data$sub_unique_mm_list[[1]]
-hs_dd_only = subset_data$sub_unique_mm_list[[2]] 
+hs_dd_only = subset_data$sub_unique_mm_list[[2]]
 protinfos_mm_dd = subset_data$sub_unique_prot.info[[1]]
 DE_mCG_CG_mm_dd = peptideLevel_DE(mm_dd_only, grps,
                                   prot.info=protinfos_mm_dd, pr_ppos=2)

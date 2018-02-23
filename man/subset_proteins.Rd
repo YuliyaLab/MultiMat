@@ -76,7 +76,7 @@ imp_mm = MBimpute(mm_norm_m, grps,
 # Load human dataset
 data(hs_peptides)
 head(hs_peptides)
-intsCols = 8:13 
+intsCols = 8:13
 metaCols = 1:7 # reusing this variable
 m_logInts = make_intencities(hs_peptides, intsCols)  # will reuse the name
 m_prot.info = make_meta(hs_peptides, metaCols)

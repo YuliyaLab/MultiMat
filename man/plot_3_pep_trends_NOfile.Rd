@@ -45,7 +45,7 @@ m_logInts = make_intencities(hs_peptides, intsCols)
 # for anlysis and log2 transform
 m_logInts = convert_log2(m_logInts)
 # column indices that contain metadata such as protein IDs and sequences
-metaCols = 1:7 
+metaCols = 1:7
 m_prot.info = make_meta(hs_peptides, metaCols)
 grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG'))
 hs_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)

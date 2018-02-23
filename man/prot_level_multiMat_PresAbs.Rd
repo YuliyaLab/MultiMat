@@ -36,7 +36,7 @@ for FC, PV, BHPV and numebers of peptides}
 a data frame with the following columns:
 \describe{
   \item{protIDused}{protein metadata, peptide sequence if was
-       passed in as one of the columns is the first peptide 
+       passed in as one of the columns is the first peptide
        equence encountered in the data for that protein}
   \item{FCs}{Avegares across all datasets of the approximation
        of the fold change computed as percent missing observations
