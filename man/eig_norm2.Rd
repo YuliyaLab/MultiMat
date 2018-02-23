@@ -7,17 +7,21 @@
 eig_norm2(rv)
 }
 \arguments{
-\item{rv}{return value from the eig_norm1 if user wants to change the number of bias
-trends that will be eliminated h.c in rv should be updates to the desired number}
+\item{rv}{return value from the eig_norm1 if user wants to change
+the number of bias trends that will be eliminated h.c in
+rv should be updates to the desired number}
 }
 \value{
 A structure with multiple components
 \describe{
-  \item{normalized}{matrix of normalized abundances with 2 columns of protein and peptdie names}
+  \item{normalized}{matrix of normalized abundances with 2 columns
+                    of protein and peptdie names}
   \item{norm_m}{matrix of normalized abundances, no extra columns}
   \item{eigentrends}{trends found in raw data, bias trends up to h.c}
-  \item{norm.svd}{trends in normalized data, if one wanted to plot at later time}
-  \item{exPeps}{peptides excluded due to not enough peptides or exception in fitting a linear model}
+  \item{norm.svd}{trends in normalized data, if one
+                  wanted to plot at later time}
+  \item{exPeps}{peptides excluded due to not enough peptides or
+                exception in fitting a linear model}
 }
 }
 \description{
@@ -32,12 +36,14 @@ Ref:  "Metabolomics data normalization with EigenMS"
 \examples{
 data(mm_peptides)
 head(mm_peptides)
-intsCols = 8:13 # different from parameter names as R uses outer name spaces if variable is undefined
+# different from parameter names as R uses outer name
+# spaces if variable is undefined
+intsCols = 8:13
 metaCols = 1:7 # reusing this variable
-m_logInts = make_intencities(mm_peptides, intsCols)  # will reuse the name
+m_logInts = make_intencities(mm_peptides, intsCols)
 m_prot.info = make_meta(mm_peptides, metaCols)
 m_logInts = convert_log2(m_logInts)
-grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG')) # 3 samples for CG and 3 for mCG
+grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG'))
 mm_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
 mm_m_ints_eig1$h.c # check the number of bias trends detected
 mm_m_ints_norm = eig_norm2(rv=mm_m_ints_eig1)

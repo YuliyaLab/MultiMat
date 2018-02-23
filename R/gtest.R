@@ -1,17 +1,21 @@
 #' G Test for presence - absence analysis
 #'
-#' Log-likelihood test for independence & goodness of fit. g.test() performs Williams'
-#' and Yates' correction; Monte Carlo simulation of p-values, via gtestsim.c. MC requires recompilation of R.
+#' Log-likelihood test for independence & goodness of fit.
+#' g.test() performs Williams' and Yates' correction;
+#' Monte Carlo simulation of p-values, via gtestsim.c.
+#' MC requires recompilation of R.
 #' Written by Peter Hurd (V3.3 Pete Hurd Sept 29 2001, phurd AT ualberta.ca).
 #' Yuliya Karpievitch added comments for ease of understanding and
-#' incorporated into MultiMat. G & q calculation from Sokal & Rohlf (1995) Biometry 3rd ed.,
+#' incorporated into MultiMat.
+#' G & q calculation from Sokal & Rohlf (1995) Biometry 3rd ed.,
 #' TOI Yates correction taken from Mike Camanns 2x2 G-test function,
 #' GOF Yates correction as described in Zar (2000),
 #' more stuff taken from ctest's chisq.test().
 #'
 #' Order of T/F does not matter, can be used interchangeably,
 #'    eg: c(TRUE, TRUE, FALSE, FALSE)
-#' @param y vector treatments (factor) corresponding to values in x, same length as x
+#' @param y vector treatments (factor) corresponding to values in x,
+#'            same length as x
 #'            eg: as.factor(c('grp1;, 'grp1', 'grp2', 'grp2'))
 #'
 #' @param correct correction to apply, options: "yates", "williams", "none"
@@ -19,11 +23,11 @@
 #'            NOTE: in MultiMat we only tested & used correction = "none"
 #'
 #' @param p default: rep(1/length(x), length(x)), used in Yates correction
-#'            NOTE: in MultiMat we only tested & used the default parameter value
+#'           NOTE: in MultiMat we only tested & used the default parameter value
 #'
 #' @param simulate.p.value TRUE/FALSE indicator if p-value is to be simulated,
-#'            default: FALSE
-#'            NOTE: in MultiMat we only tested & used the default parameter value
+#'           default: FALSE
+#'           NOTE: in MultiMat we only tested & used the default parameter value
 #'
 #' @param B number of bootstrap iterations to use, default:  2000
 #' @return htest object the following variables
@@ -37,7 +41,8 @@
 #'   \item{expected}{matrix of expected counts}
 #' }
 #' @examples
-#' g.test(c(TRUE, TRUE, FALSE, FALSE), as.factor(c('grp1', 'grp1', 'grp2', 'grp2')))
+#' g.test(c(TRUE, TRUE, FALSE, FALSE),
+#'        as.factor(c('grp1', 'grp1', 'grp2', 'grp2')))
 #' @export
 g.test = function(x, y = NULL, correct="none",
   p = rep(1/length(x), length(x)), simulate.p.value = FALSE, B = 2000)
@@ -168,7 +173,7 @@ g.test = function(x, y = NULL, correct="none",
     }
     STATISTIC <- G <- 2*g/q
     PARAMETER <- length(x) - 1
-    PVAL <- pchisq(STATISTIC, PARAMETER, lower = FALSE)
+    PVAL <- pchisq(STATISTIC, PARAMETER, lower.tail = FALSE)
   }
   names(STATISTIC) <- "Log likelihood ratio statistic (G)"
   names(PARAMETER) <- "X-squared df"

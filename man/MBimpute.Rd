@@ -15,44 +15,53 @@ as.factor(c('CG','CG','CG', 'mCG','mCG','mCG')) or c(1,1,1,1,2,2,2,2)}
 
 \item{pr_ppos}{column index for protein ID in prot.info}
 
-\item{my.pi}{PI value, estimate of the proportion of peptides missign completely at
-random, as compared to censored at lower abundance levels default values
-of 0.05 is usually reasoanble for missing completely at random values
+\item{my.pi}{PI value, estimate of the proportion of peptides missign
+completely at random, as compared to censored at lower
+abundance levels default values of 0.05 is usually reasoanble
+for missing completely at random values
 in proteomics data}
 
-\item{compute_pi}{TRUE/FALSE (default=FALSE) estimate Pi is set to TRUE, otherwise
-use the provided value. We consider Pi=0.05 a reasonable estimate for
-onservations missing completely at random in proteomics experiments.
-Thus values is set to NOT estimate Pi by default. Note: spline smoothing
-can sometimes produce values of Pi outside the range of possible values.}
+\item{compute_pi}{TRUE/FALSE (default=FALSE) estimate Pi is set to TRUE,
+otherwise use the provided value. We consider Pi=0.05 a
+reasonable estimate for onservations missing completely at
+random in proteomics experiments. Thus values is set to NOT
+estimate Pi by default. Note: spline smoothing
+can sometimes produce values of Pi outside the range of
+possible values.}
 }
 \value{
 A structure with multiple components
 \describe{
-  \item{y_imputed}{number of peptides x m matrix of peptides with no missing data}
-  \item{imp_prot.info}{imputed protein info, 2+ columns: peptide ID, protein IDs, etc
+  \item{y_imputed}{number of peptides x m matrix of peptides
+                   with no missing data}
+  \item{imp_prot.info}{imputed protein info, 2+ columns: peptide ID,
+                 protein IDs, etc
                  Dimentions should be the same as passed in}
 }
 }
 \description{
-Impute missing values based on information from multiple peptides within a protein
-Expects the data to be filtered to contain at least one observation per treatment
+Impute missing values based on information
+from multiple peptides within a protein
+Expects the data to be filtered to contain
+at least one observation per treatment
 group.
 }
 \examples{
 data(mm_peptides)
 head(mm_peptides)
-intsCols = 8:13 # different from parameter names as R uses outer name spaces if variable is undefined
+intsCols = 8:13 # different from parameter names as R uses outer name spaces
+                # if variable is undefined
 metaCols = 1:7 # reusing this variable
 m_logInts = make_intencities(mm_peptides, intsCols)  # will reuse the name
 m_prot.info = make_meta(mm_peptides, metaCols)
 m_logInts = convert_log2(m_logInts)
-grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG')) # 3 samples for CG and 3 for mCG
+grps = as.factor(c('CG','CG','CG', 'mCG','mCG','mCG'))
 mm_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
 mm_m_ints_eig1$h.c # check the number of bias trends detected
 mm_m_ints_norm = eig_norm2(rv=mm_m_ints_eig1)
 mm_prot.info = mm_m_ints_norm$normalized[,1:7]
 mm_norm_m =  mm_m_ints_norm$normalized[,8:13]
-imp_mm = MBimpute(mm_norm_m, grps, prot.info=mm_prot.info, pr_ppos=2, my.pi=0.05,
+imp_mm = MBimpute(mm_norm_m, grps, prot.info=mm_prot.info, pr_ppos=2,
+                  my.pi=0.05,
                   compute_pi=FALSE, sseed=131)
 }
