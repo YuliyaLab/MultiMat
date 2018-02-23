@@ -12,5 +12,8 @@ devtools::use_package("readr")
 #' @import gdata ggplot2 ggrepel gtools multtest readr
 #' @importFrom dplyr mutate
 #' @importFrom dplyr filter
+#' @importFrom biomaRt useMart
+#' @importFrom biomaRt getBM
+#' 
 NULL
 # line containing NULL is needed for roxygen2

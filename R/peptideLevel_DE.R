@@ -587,9 +587,9 @@ get_EnsIDs = function(organizm='human') {
 
   lookup_pos = lookup[,1] == organizm
 
-  ensembl = useMart("ensembl", dataset=lookup[lookup_pos,2]) # useMart not imported #tim
+  ensembl = biomaRt::useMart("ensembl", dataset=lookup[lookup_pos,2]) # useMart not imported #tim
   gene_symbol = lookup[lookup_pos,3]
-  res = getBM(attributes=c(gene_symbol, 'uniprotswissprot', 'ensembl_gene_id'), # getBM not imported #tim
+  res = biomaRt::getBM(attributes=c(gene_symbol, 'uniprotswissprot', 'ensembl_gene_id'), # getBM not imported #tim
               mart=ensembl)
   dim(res)  # human: 37593
   colnames(res) = c('GeneID', 'ProtID', 'EnsID')
