@@ -7,13 +7,13 @@
 convert_log2(mm, use_cols)
 }
 \arguments{
+\item{mm}{a dataframe of raw intensities in format:
+(# peptides) x (# samples + possibly peptide & protein information (metadata))}
+
 \item{use_cols}{vector of column indecies that make up the intensities
 usually in sequential order but do not have to be
 user is responsible for making sure that specified columns are
 indeed numeric and correspond to intensities for each sample}
-
-\item{raw_intensities_dataframe}{a dataframe of raw intensities in format:
-(# peptides) x (# samples + possibly peptide & protein information (metadata))}
 }
 \value{
 matrix of log2 transforemd intensities where 0's were

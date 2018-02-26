@@ -12,8 +12,13 @@
 #' GOF Yates correction as described in Zar (2000),
 #' more stuff taken from ctest's chisq.test().
 #'
-#' Order of T/F does not matter, can be used interchangeably,
-#'    eg: c(TRUE, TRUE, FALSE, FALSE)
+#'
+#'
+#' @param x vector of boolean values corresponding to presence & absence
+#'          eg: c(TRUE, TRUE, FALSE, FALSE) for present present absent absent values
+#'          Order of TRUE/FALSE does not matter, can be used interchangeably.
+#'          Same length as parameter y
+#'
 #' @param y vector treatments (factor) corresponding to values in x,
 #'            same length as x
 #'            eg: as.factor(c('grp1;, 'grp1', 'grp2', 'grp2'))

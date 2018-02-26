@@ -126,7 +126,7 @@ make_meta = function(mm, use_cols) {
 #' Karpievitch et al. 2009 "A statistical framework for protein
 #'   quantitation in bottom-up MS-based proteomics".  PMID: 19535538
 #'
-#' @param raw_intensities_dataframe a dataframe of raw intensities in format:
+#' @param mm a dataframe of raw intensities in format:
 #'  (# peptides) x (# samples + possibly peptide & protein information (metadata))
 #'
 #' @param use_cols vector of column indecies that make up the intensities
@@ -382,6 +382,10 @@ plot_volcano_wLab = function(FC, PV, ProtID,
 #'              this will take a while, test code
 #'              with fewer permutations
 #' @param setseed random number generator seed, default = 12345
+#' @param dataset_suffix vector of character strings that corresponds to the dataset
+#'        being analysed. Same length as mm_list. Names will be appended to the columns
+#'        names that will be generated for each analysed dataset. For example, if analysing
+#'        mouse and human data this vector may be: c('Mouse', 'Human')
 #' @return data frame with the following columns
 #' \describe{
 #'   \item{protIDused}{Column containing the protien IDs used to
@@ -476,7 +480,7 @@ plot_volcano_wLab = function(FC, PV, ProtID,
 #'                                   prot.info=protinfos_mm_dd, pr_ppos=2)
 #'
 #' @export
-prot_level_multi_part <- function(mm_list, treat, prot.info,
+prot_level_multi_part = function(mm_list, treat, prot.info,
                                   prot_col_name, nperm=500, setseed=12345,
                                   dataset_suffix){
   # select proteins that were detected in each experiment

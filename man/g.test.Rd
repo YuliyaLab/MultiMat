@@ -8,6 +8,11 @@ g.test(x, y = NULL, correct = "none", p = rep(1/length(x), length(x)),
   simulate.p.value = FALSE, B = 2000)
 }
 \arguments{
+\item{x}{vector of boolean values corresponding to presence & absence
+eg: c(TRUE, TRUE, FALSE, FALSE) for present present absent absent values
+Order of TRUE/FALSE does not matter, can be used interchangeably.
+Same length as parameter y}
+
 \item{y}{vector treatments (factor) corresponding to values in x,
 same length as x
 eg: as.factor(c('grp1;, 'grp1', 'grp2', 'grp2'))}
@@ -49,10 +54,6 @@ G & q calculation from Sokal & Rohlf (1995) Biometry 3rd ed.,
 TOI Yates correction taken from Mike Camanns 2x2 G-test function,
 GOF Yates correction as described in Zar (2000),
 more stuff taken from ctest's chisq.test().
-}
-\details{
-Order of T/F does not matter, can be used interchangeably,
-   eg: c(TRUE, TRUE, FALSE, FALSE)
 }
 \examples{
 g.test(c(TRUE, TRUE, FALSE, FALSE),

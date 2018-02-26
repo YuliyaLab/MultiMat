@@ -31,6 +31,7 @@
 #' @param mm number of peptides x number of samples matrix of intensities
 #' @param treatment vector indicating the treatment group of each sample eg
 #'        as.factor(c('CG','CG','CG', 'mCG','mCG','mCG')) or c(1,1,1,1,2,2,2,2)
+#' @param prot.info protein metadata, 2+ columns: peptide IDs, protein IDs, etc
 #' @param pr_ppos column index for protein ID in prot.info
 #' @param my.pi PI value, estimate of the proportion of peptides missign
 #'              completely at random, as compared to censored at lower
@@ -44,6 +45,8 @@
 #'              estimate Pi by default. Note: spline smoothing
 #'              can sometimes produce values of Pi outside the range of
 #'              possible values.
+#' @param sseed random seed to use in imputation, set this seed to allow to reporoduce
+#'              the values in future runs.
 #'
 #' @return A structure with multiple components
 #' \describe{
