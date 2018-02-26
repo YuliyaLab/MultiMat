@@ -216,6 +216,7 @@ compute_missing = function(mm) {
 #'                          pr_ppos=2)
 #' plot_volcano(DE_res$FC, DE_res$BH_P_val, FC_cutoff=1.5,
 #'              PV_cutoff=.05, figtitle='Mouse DE')
+#' @return Nil
 #' @export
 plot_volcano = function(FC, PV, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
   tmp_x = FC
@@ -292,6 +293,7 @@ plot_volcano = function(FC, PV, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
 #'
 #' @import ggrepel ggplot2
 #' @importFrom dplyr mutate
+#' @return Nil
 #' @export
 plot_volcano_wLab = function(FC, PV, ProtID,
                              FC_cutoff=2,

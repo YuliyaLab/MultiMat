@@ -19,6 +19,6 @@ Imports: dplyr,
     gtools,
     multtest,
     readr
-biocViews: MassSpectrometry, Proteomics, Normalization, Imputation, Bias, BiasRemoval, MultipleDatasets
+biocViews: MassSpectrometry, Proteomics, Normalization
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

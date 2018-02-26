@@ -172,6 +172,7 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
 #'                          prot_to_plot, 3,
 #'                          gene_to_plot, 4, mylabs)
 #'
+#' @return Nil
 #' @export
 plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
                                     sorted_prot.info,
@@ -259,6 +260,7 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
 #'        most commonly should be
 #'        treatment groups
 #' @param mylabs sample labels to be plotted on x-axis
+#' @return Nil
 plot_1prot = function(mm, prot.info, prot_to_plot, prot_to_plot_col,
                            gene_name, gene_name_col, colors, mylabs) {
   par(mfcol=c(1,1))

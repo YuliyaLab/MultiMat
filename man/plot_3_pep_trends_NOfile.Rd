@@ -33,6 +33,9 @@ observation per treatment group}
 
 \item{mylabs}{sample labels to be plotted on x-axis}
 }
+\value{
+Nil
+}
 \description{
 Plot Raw, Normalized and Normalized & Imputed peptide trends for a protein
 }

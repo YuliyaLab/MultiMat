@@ -26,6 +26,9 @@ treatment groups}
 
 \item{mylabs}{sample labels to be plotted on x-axis}
 }
+\value{
+Nil
+}
 \description{
 Plot peptide trends for a protein
 }

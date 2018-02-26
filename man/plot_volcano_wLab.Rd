@@ -25,6 +25,9 @@ default ==.05}
 
 \item{figtitle}{title to display at the top of the figure, default = ''}
 }
+\value{
+Nil
+}
 \description{
 Function plots fold changes and p-values as a volcano plot.
 Two lines are plotted for the p-value cutoff at p = PV_cutoff
