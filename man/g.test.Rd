@@ -4,8 +4,7 @@
 \alias{g.test}
 \title{G Test for presence - absence analysis}
 \usage{
-g.test(x, y = NULL, correct = "none", p = rep(1/length(x), length(x)),
-  simulate.p.value = FALSE, B = 2000)
+g.test(x, y = NULL, correct = "none", p = rep(1/length(x), length(x)))
 }
 \arguments{
 \item{x}{vector of boolean values corresponding to presence & absence
@@ -23,12 +22,6 @@ NOTE: in MultiMat we only tested & used correction = "none"}
 
 \item{p}{default: rep(1/length(x), length(x)), used in Yates correction
 NOTE: in MultiMat we only tested & used the default parameter value}
-
-\item{simulate.p.value}{TRUE/FALSE indicator if p-value is to be simulated,
-default: FALSE
-NOTE: in MultiMat we only tested & used the default parameter value}
-
-\item{B}{number of bootstrap iterations to use, default:  2000}
 }
 \value{
 htest object the following variables

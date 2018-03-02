@@ -32,7 +32,6 @@ normalization to find the significant
 trends in the matrix of residuals.
 }
 \examples{
-grps = c('CG', 'CG', 'CG', 'mCG', 'mCG', 'mCG')
-makeLMFormula(grps, 'TREAT')
-
+grps = as.factor(c('CG', 'CG', 'CG', 'mCG', 'mCG', 'mCG'))
+makeLMFormula(grps, 'TREATS')
 }

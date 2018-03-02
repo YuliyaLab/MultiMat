@@ -175,9 +175,9 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
 #'   \item{lm.params}{contrasts for lm(), here sum-to-zero constraint only}
 #' }
 #' @examples
-#' grps = c('CG', 'CG', 'CG', 'mCG', 'mCG', 'mCG')
-#' makeLMFormula(grps, 'TREAT')
-#'
+#' grps = as.factor(c('CG', 'CG', 'CG', 'mCG', 'mCG', 'mCG'))
+#' makeLMFormula(grps, 'TREATS')
+#' @export
 makeLMFormula = function(eff, var_name='') {
   # eff - effects used in contrasts
   # var_name - for singe factor use var-name that is passed in as variable names
@@ -405,25 +405,25 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   if(n.u.treatment > 1) {
     print('Got 2+ treatment grps')
 	  # using general function that can accomodate for 1+ number of factors
-	  lm.fm = makeLMFormula(treatment, 'TREAT')
-    TREAT = treatment
+	  lm.fm = makeLMFormula(treatment, 'TREATS')
+    TREATS = treatment
     # temp var to work if we got only 1 treatment vector.
-    TREAT = data.frame(treatment)
+    TREATS = data.frame(treatment)
     if(class(treatment) == "factor") {
-      colnames(TREAT) = "TREAT"
+      colnames(TREATS) = "TREATS"
      } else {
-      colnames(TREAT) = colnames(treatment)
+      colnames(TREATS) = colnames(treatment)
     }
-    attach(TREAT)
+    attach(TREATS)
 
-    mod.c = model.matrix(lm.fm$lm.formula, data=TREAT,
+    mod.c = model.matrix(lm.fm$lm.formula, data=TREATS,
                          eval(parse(text=lm.fm$lm.params)))
     Y.c = as.matrix(complete) # used in eval() !!
 	  options(warn = -1)
 
     # use lm() to get residuals
     formula1 = paste('t(Y.c)~', as.character(lm.fm$lm.formula)[2], sep = '')
-    TREAT = treatment
+    TREATS = treatment
     fit_lmAll = lm(eval(parse(text=formula1)))
     R.c = residuals(fit_lmAll)  # Oct 2 messing with residuals...
   } else {  # 1 group only, set residuals to original matrix
@@ -431,7 +431,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
       mod.c = as.numeric(t(treatment))
 	  # needs to be transposed to match the matrix returned from lm
 	  R.c = t(as.matrix(complete))
-      TREAT = treatment
+      TREATS = treatment
   }
 
   print('Computing SVD, estimating Eigentrends...')

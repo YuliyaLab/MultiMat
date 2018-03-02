@@ -30,11 +30,6 @@
 #' @param p default: rep(1/length(x), length(x)), used in Yates correction
 #'           NOTE: in MultiMat we only tested & used the default parameter value
 #'
-#' @param simulate.p.value TRUE/FALSE indicator if p-value is to be simulated,
-#'           default: FALSE
-#'           NOTE: in MultiMat we only tested & used the default parameter value
-#'
-#' @param B number of bootstrap iterations to use, default:  2000
 #' @return htest object the following variables
 #' \describe{
 #'   \item{statistic}{value of the G statistic produced by g test}
@@ -50,7 +45,7 @@
 #'        as.factor(c('grp1', 'grp1', 'grp2', 'grp2')))
 #' @export
 g.test = function(x, y = NULL, correct="none",
-  p = rep(1/length(x), length(x)), simulate.p.value = FALSE, B = 2000)
+  p = rep(1/length(x), length(x) ) )
 {
   DNAME <- deparse(substitute(x))
   if (is.data.frame(x)) x <- as.matrix(x)
@@ -74,9 +69,9 @@ g.test = function(x, y = NULL, correct="none",
     stop("all entries of x must be nonnegative and finite")
   if ((n <- sum(x)) == 0)
     stop("at least one entry of x must be positive")
-  #If x is matrix, do test of independence
+  # If x is matrix, do test of independence
   if (is.matrix(x)) {
-    #Test of Independence
+    # Test of Independence
     nrows<-nrow(x)
     ncols<-ncol(x)
     if (correct=="yates"){ # Do Yates' correction?
@@ -97,56 +92,36 @@ g.test = function(x, y = NULL, correct="none",
           x[2,1] <- x[2,1] - 0.5
         }
     }
-
     sr <- apply(x,1,sum)
     sc <- apply(x,2,sum)
     E <- outer(sr,sc, "*")/n
-    # are we doing a monte-carlo?
-    # no monte carlo GOF?
-    if (simulate.p.value){
-      METHOD <- paste("Log likelihood ratio (G-test) test of independence\n\t with simulated p-value based on", B, "replicates")
-      tmp <- .C("gtestsim", as.integer(nrows), as.integer(ncols),
-                as.integer(sr), as.integer(sc), as.integer(n), as.integer(B),
-                as.double(E), integer(nrows * ncols), double(n+1),
-                integer(ncols), results=double(B), PACKAGE= "ctest")
-      g <- 0
-      for (i in 1:nrows){
-        for (j in 1:ncols){
-          if (x[i,j] != 0) g <- g + x[i,j] * log(x[i,j]/E[i,j])
-        }
+    # we are not doing a monte-carlo, calculate G
+
+    # no monte-carlo
+    # calculate G
+    g <- 0
+    for (i in 1:nrows){
+      for (j in 1:ncols){
+        if (x[i,j] != 0) g <- g + x[i,j] * log(x[i,j]/E[i,j])
       }
-      STATISTIC <- G <- 2 * g
-      PARAMETER <- NA
-      PVAL <- sum(tmp$results >= STATISTIC)/B
     }
-    else {
-      # no monte-carlo
-      # calculate G
-      g <- 0
-      for (i in 1:nrows){
-        for (j in 1:ncols){
-          if (x[i,j] != 0) g <- g + x[i,j] * log(x[i,j]/E[i,j])
-        }
-      }
-      q <- 1
-      if (correct=="williams"){ # Do Williams' correction
-        row.tot <- col.tot <- 0
-        for (i in 1:nrows){ row.tot <- row.tot + 1/(sum(x[i,])) }
-        for (j in 1:ncols){ col.tot <- col.tot + 1/(sum(x[,j])) }
-        q <- 1+ ((n*row.tot-1)*(n*col.tot-1))/(6*n*(ncols-1)*(nrows-1))
-      }
-      STATISTIC <- G <- 2 * g / q
-      PARAMETER <- (nrow(x)-1)*(ncol(x)-1)
-      PVAL <- 1-pchisq(STATISTIC,df=PARAMETER)
-      if(correct=="none")
-        METHOD <- "Log likelihood ratio (G-test) test of independence without correction"
-      if(correct=="williams")
-        METHOD <- "Log likelihood ratio (G-test) test of independence with Williams' correction"
-      if(correct=="yates")
-        METHOD <- "Log likelihood ratio (G-test) test of independence with Yates' correction"
+    q <- 1
+    if (correct=="williams"){ # Do Williams' correction
+      row.tot <- col.tot <- 0
+      for (i in 1:nrows){ row.tot <- row.tot + 1/(sum(x[i,])) }
+      for (j in 1:ncols){ col.tot <- col.tot + 1/(sum(x[,j])) }
+      q <- 1+ ((n*row.tot-1)*(n*col.tot-1))/(6*n*(ncols-1)*(nrows-1))
     }
-  }
-  else {
+    STATISTIC <- G <- 2 * g / q
+    PARAMETER <- (nrow(x)-1)*(ncol(x)-1)
+    PVAL <- 1-pchisq(STATISTIC,df=PARAMETER)
+    if(correct=="none")
+      METHOD <- "Log likelihood ratio (G-test) test of independence without correction"
+    if(correct=="williams")
+      METHOD <- "Log likelihood ratio (G-test) test of independence with Williams' correction"
+    if(correct=="yates")
+      METHOD <- "Log likelihood ratio (G-test) test of independence with Yates' correction"
+  } else {
     # x is not a matrix, so we do Goodness of Fit
     METHOD <- "Log likelihood ratio (G-test) goodness of fit test"
     if (length(x) == 1)
