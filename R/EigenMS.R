@@ -87,7 +87,7 @@ plot.eigentrends = function(svdr, title1){
   Tk = signif(ss/sum(ss)* 100, 2)
 
   titles = paste("Trend ", 1:3, " (", Tk[1:3], "%)", sep = "")
-  do.text = function(j) mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
+  do.text = function(j) graphics::mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
   range.y = range(as.numeric(v[,1:3]), na.rm=TRUE)
 
   toplot1_1 = as.numeric(v[,1])
@@ -96,14 +96,14 @@ plot.eigentrends = function(svdr, title1){
 
   plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=FALSE, ylim=range.y)
   do.text(1)
-  abline(h=0, lty=3)
-  title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
+  graphics::abline(h=0, lty=3)
+  graphics::title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
   plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=FALSE, ylim=range.y)
   do.text(2)
-  abline(h=0, lty=3)
+  graphics::abline(h=0, lty=3)
   plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=FALSE, ylim=range.y)
   do.text(3)
-  abline(h=0, lty=3)
+  graphics::abline(h=0, lty=3)
   return(Tk)
 }
 
@@ -119,7 +119,7 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
   #  pe = signif(d/sum(d, na.rm=T)*100, 2)
   titles = paste("Trend ", pos1:(pos1+3),
                  " (", Tk[pos1:(pos1+3)], "%)", sep = "")
-  do.text = function(j) mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
+  do.text = function(j) graphics::mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
   range.y = range(as.numeric(v[,pos1:(pos1+3)]), na.rm=TRUE)
 
   toplot1_1 = as.numeric(v[,pos1])
@@ -128,14 +128,14 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
 
   plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=FALSE, ylim=range.y)
   do.text(1)
-  abline(h=0, lty=3)
-  title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
+  graphics::abline(h=0, lty=3)
+  graphics::title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
   plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=FALSE, ylim=range.y)
   do.text(2)
-  abline(h=0, lty=3)
+  graphics::abline(h=0, lty=3)
   plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=FALSE, ylim=range.y)
   do.text(3)
-  abline(h=0, lty=3)
+  graphics::abline(h=0, lty=3)
   return(Tk)
 }
 
@@ -205,7 +205,7 @@ makeLMFormula = function(eff, var_name='') {
 	  }
   }
   params = paste(params,")")
-  lm.formula = as.formula(paste('~', lhs))
+  lm.formula = stats::as.formula(paste('~', lhs))
   lm.fm$lm.formula = lm.formula
   lm.fm$lm.params = params
   return(lm.fm)
@@ -391,7 +391,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
 
   #  write out a file of complete peptides if file name is passed in
   if(write_to_file != '') {
-    write.table(complete, file = write_to_file, append = FALSE,
+    utils::write.table(complete, file = write_to_file, append = FALSE,
              quote = FALSE, sep = "\t",
              eol = "\n", na = "NaN", dec = ".", row.names = TRUE,
              col.names = TRUE, qmethod = c("escape", "double"))
@@ -416,16 +416,16 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
     }
     attach(TREATS)
 
-    mod.c = model.matrix(lm.fm$lm.formula, data=TREATS,
+    mod.c = stats::model.matrix(lm.fm$lm.formula, data=TREATS,
                          eval(parse(text=lm.fm$lm.params)))
     Y.c = as.matrix(complete) # used in eval() !!
 	  options(warn = -1)
 
-    # use lm() to get residuals
+    # use stats::lm() to get residuals
     formula1 = paste('t(Y.c)~', as.character(lm.fm$lm.formula)[2], sep = '')
     TREATS = treatment
-    fit_lmAll = lm(eval(parse(text=formula1)))
-    R.c = residuals(fit_lmAll)  # Oct 2 messing with residuals...
+    fit_lmAll = stats::lm(eval(parse(text=formula1)))
+    R.c = stats::residuals(fit_lmAll)  # Oct 2 messing with residuals...
   } else {  # 1 group only, set residuals to original matrix
     print('Got 1 treatment grp')
       mod.c = as.numeric(t(treatment))
@@ -470,8 +470,8 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   toplot1$u = toplot1$v
   toplot1$v = temp
 
-  par(mfcol=c(3,2))
-  par(mar = c(2,2,2,2))
+  graphics::par(mfcol=c(3,2))
+  graphics::par(mar = c(2,2,2,2))
   plot.eigentrends(toplot1, "Raw Data")
   plot.eigentrends(my.svd, "Residual Data")
 
@@ -545,7 +545,7 @@ eig_norm2 = function(rv) {
     lm.fm = makeLMFormula(treatment, 'ftemp')
     #contrasts=list(bl="contr.sum",
     #               it="contr.sum",Pi="contr.sum", tp="contr.sum"))
-    mtmp = model.matrix(lm.fm$lm.formula, data=treatment,
+    mtmp = stats::model.matrix(lm.fm$lm.formula, data=treatment,
                         eval(parse(text=lm.fm$lm.params)))
   } else {  # have 1 treatment group
     mtmp = treatment # as.numeric(t(treatment))
@@ -587,7 +587,7 @@ eig_norm2 = function(rv) {
       options(warn = -1)
       # using general function that can accomodate for 1+ number of factors
       lm.fm = makeLMFormula(ftemp, 'ftemp')
-      modt = try(model.matrix(lm.fm$lm.formula, data=ftemp,
+      modt = try(stats::model.matrix(lm.fm$lm.formula, data=ftemp,
                               eval(parse(text=lm.fm$lm.params))), silent=TRUE)
       options(warn = 0)
 
@@ -643,8 +643,8 @@ eig_norm2 = function(rv) {
   complete_all = y_rescaled[rowSums(is.na(y_rescaled))==0,,drop=FALSE]
 
   #  x11() # make R open new figure window
-  par(mfcol=c(3,2))
-  par(mar = c(2,2,2,2))
+  graphics::par(mfcol=c(3,2))
+  graphics::par(mar = c(2,2,2,2))
   # center each peptide around zero (subtract its mean across samples)
   # note: we are not changing matrix itself, only centerig what we pass to svd
   complete_all_center = t(scale(t(complete_all), center = TRUE, scale = FALSE))
@@ -678,8 +678,8 @@ eig_norm2 = function(rv) {
 #' @param dat number of peptides/genes x number of samples
 #'            matrix of expression data with no missing values
 #' @param n.u.treatment number of treatment groups
-#' @param lm.fm formular for treatment to be use on the right side of the call to lm()
-#'        as generated by makeLMFormula()
+#' @param lm.fm formular for treatment to be use on the right side of the call to
+#'        stats::lm() as generated by makeLMFormula()
 #' @param B The number of null iterations to perform
 #' @param sv.sig The significance cutoff for the surrogate variables
 #' @param seed A seed value for reproducible results
@@ -704,8 +704,8 @@ sva.id = function(dat, n.u.treatment, lm.fm, B=500, sv.sig=0.05, seed=NULL)
 
   if(ncomp > 1) { #
     formula1 = paste('t(dat)~', as.character(lm.fm$lm.formula)[2], sep = '')
-    fit_lmAll = lm(eval(parse(text=formula1)))
-    res = t(residuals(fit_lmAll))
+    fit_lmAll = stats::lm(eval(parse(text=formula1)))
+    res = t(stats::residuals(fit_lmAll))
   } else {
     res = dat
   }
@@ -789,7 +789,7 @@ mmul = function(A, B){
 #######################################################################
 my.Psi = function(x, my.pi){
 # calculates Psi
-exp(log(1-my.pi) + dnorm(x, 0, 1, log=TRUE)-log(my.pi+(1-my.pi)*pnorm(x, 0, 1)))
+exp(log(1-my.pi) + stats::dnorm(x, 0, 1, log=TRUE)-log(my.pi+(1-my.pi)*pnorm(x, 0, 1)))
 }
 # end my.Psi
 
@@ -799,13 +799,5 @@ my.Psi.dash = function(x, my.pi){
 }
 # end my.Psi.dash
 
-phi = function(x){dnorm(x)}
+phi = function(x){ stats::dnorm(x) }
 
-rnorm.trunc = function (n, mu, sigma, lo=-Inf, hi=Inf){
-# Calculates truncated noraml
-  p.lo = pnorm (lo, mu, sigma)
-  p.hi = pnorm (hi, mu, sigma)
-  u = runif (n, p.lo, p.hi)
-  return (qnorm (u, mu, sigma))
-}
-# end rnorm.truncf

@@ -191,7 +191,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
       tmp = data.frame(most_obs)
       treat_to_use = rownames(tmp)
       y.i = pep[treatment == treat_to_use]
-      p2 = var(y.i, na.rm=TRUE)
+      p2 = stats::var(y.i, na.rm=TRUE)
       if (is.na(p2)) { p2 = 0 }
       present = length(y.i)
       num = num + (p2 * (present-1))
@@ -216,11 +216,11 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     # remove any missing values from consideration
     iii = (1:nn)[is.na(yy)] # positions of the NA's
     if (n.peptide != 1){
-      X  = model.matrix(~f.peptide + f.treatment,
+      X  = stats::model.matrix(~f.peptide + f.treatment,
                         contrasts = list(f.treatment="contr.sum",
                                          f.peptide="contr.sum") )
     } else {
-      X = model.matrix(~f.treatment, contrasts=list(f.treatment="contr.sum"))
+      X = stats::model.matrix(~f.treatment, contrasts=list(f.treatment="contr.sum"))
     }
     if(length(iii) > 0){
       y.c = yy[-iii] # remove NA value
@@ -242,23 +242,23 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     c_h = c_hat[as.numeric(peptide)]
 
     if(n.peptide==1){
-      y.predict = model.matrix(~f.treatment,
+      y.predict = stats::model.matrix(~f.treatment,
                                contrasts=list(f.treatment="contr.sum"))%*% beta
     } else {
-      y.predict = model.matrix(~f.peptide + f.treatment,
+      y.predict = stats::model.matrix(~f.peptide + f.treatment,
                                contrasts = list(f.treatment="contr.sum",
                                                 f.peptide="contr.sum"))%*% beta
     }
 
     zeta = dd*(c_h - y.predict)
-    PHI = pnorm(zeta, 0, 1)
-    # prob.cen = pnorm(zeta, 0, 1)/(my.pi + (1-my.pi) * pnorm(zeta, 0, 1))
+    PHI = stats::pnorm(zeta, 0, 1)
+    # prob.cen = stats::pnorm(zeta, 0, 1)/(my.pi + (1-my.pi) * stats::pnorm(zeta, 0, 1))
     prob.cen = PHI / ( (my.pi + (1-my.pi) * PHI) )
 
-    choose.cen = runif(nn) < prob.cen
+    choose.cen = stats::runif(nn) < prob.cen
     set.cen = is.na(yy) & choose.cen
     set.mar = is.na(yy) &! choose.cen
-    # kappa = my.pi + (1 - my.pi) * dnorm(zeta,0, 1) # def. not used #tim
+    # kappa = my.pi + (1 - my.pi) * stats::dnorm(zeta,0, 1) # def. not used #tim
 
     # Imputation: Replace missing values with random numbers
     #             drawn from the estimated
@@ -272,7 +272,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
       y.impute[set.cen] = rnorm.trunc(sum(set.cen), mus, ss, hi=cutoff)
 
     if(sum(set.mar) > 0) # randomly missing
-      y.impute[set.mar] = rnorm(nn, y.predict, sigma)[set.mar]
+      y.impute[set.mar] = stats::rnorm(nn, y.predict, sigma)[set.mar]
 
     y.impute.return = t(y.impute)
     imp_prot.info = rbind(imp_prot.info,curr_prot.info)
@@ -308,13 +308,13 @@ eigen_pi = function(m, toplot=TRUE)
   propmiss = rowSums(is.na(m))/ncol(m)
 
   smooth_span = (0.4)
-  fit = lowess(pepmean, propmiss, f=smooth_span)
+  fit = stats::lowess(pepmean, propmiss, f=smooth_span)
   PI = fit$y[fit$x==max(pepmean)]
 
   count = 1
   while (PI<=0){
     smooth_span = smooth_span-.1
-    fit = lowess(pepmean, propmiss, f=smooth_span)
+    fit = stats::lowess(pepmean, propmiss, f=smooth_span)
     PI = fit$y[fit$x==max(pepmean)]
     count = count + 1
     if (count > 500) break
@@ -323,8 +323,8 @@ eigen_pi = function(m, toplot=TRUE)
   if (toplot){
   st = paste("PI: ", PI)
   plot(pepmean, propmiss, xlab="x", ylab="y", cex=0.5) #plot data point
-  lines(fit)
-  title("Lowess Regression", sub = st,
+  graphics::lines(fit)
+  graphics::title("Lowess Regression", sub = st,
       cex.main = 2,   font.main= 3, col.main= "purple",
       cex.sub = 1, font.sub = 3, col.sub = "red")
   }
@@ -350,7 +350,7 @@ protein_var = function(Y_raw, treatment){
   n = length(y)
   n.treatment = length(treatment)
   n.u.treatment = length(unique(treatment))
-  peptide =rep(rep(1:n.peptide, each=n.treatment))
+  peptide = rep(rep(1:n.peptide, each=n.treatment))
 
   n.present = array(NA, c(n.peptide, n.u.treatment))
   colnames(n.present) = unique(treatment)
@@ -362,19 +362,19 @@ protein_var = function(Y_raw, treatment){
 
   # peptides.missing = rowSums(is.na(Y_raw)) # def. not used #tim
 
-  f.treatment = factor(rep(treatment, n.peptide)) # used in model.matrix below
-  f.peptide = factor(peptide) #  used in model.matrix below
+  f.treatment = factor(rep(treatment, n.peptide)) # used in stats::model.matrix below
+  f.peptide = factor(peptide) #  used in stats::model.matrix below
 
   # estimate rough model parameters
   # create model matrix for each protein and
   # remove any peptides with missing values
   ii = (1:n)[is.na(y)]
   if (n.peptide != 1){
-    X  = model.matrix(~f.peptide + f.treatment,
+    X  = stats::model.matrix(~f.peptide + f.treatment,
                       contrasts = list(f.treatment="contr.sum",
                                        f.peptide="contr.sum") )
   } else {
-    X = model.matrix(~f.treatment, contrasts=list(f.treatment="contr.sum"))
+    X = stats::model.matrix(~f.treatment, contrasts=list(f.treatment="contr.sum"))
   }
   if(length(ii) > 0){
     y.c = y[-ii]
@@ -397,12 +397,12 @@ protein_var = function(Y_raw, treatment){
 
   effects = X.c %*% beta
   resid = y.c - effects
-  overall_var = var(resid)
+  overall_var = stats::var(resid)
   return(list(overall_var=det(overall_var)))
 }
 
 my.Psi = function(x, my.pi){
-exp(log(1-my.pi)+dnorm(x, 0, 1, log=TRUE)-log(my.pi+(1-my.pi) * pnorm(x, 0, 1)))
+exp(log(1-my.pi)+stats::dnorm(x, 0, 1, log=TRUE)-log(my.pi+(1-my.pi) * stats::pnorm(x, 0, 1)))
 }
 
 my.Psi.dash = function(x, my.pi){
@@ -410,14 +410,14 @@ my.Psi.dash = function(x, my.pi){
 -my.Psi(x, my.pi) * (x + my.Psi(x, my.pi))
 }
 
-phi = function(x){dnorm(x)}
+phi = function(x){stats::dnorm(x)}
 
 rnorm.trunc = function (n, mu, sigma, lo=-Inf, hi=Inf){
 # Calculates truncated noraml
-  p.lo = pnorm (lo, mu, sigma)
-  p.hi = pnorm (hi, mu, sigma)
-  u = runif (n, p.lo, p.hi)
-  return (qnorm (u, mu, sigma))
+  p.lo = stats::pnorm(lo, mu, sigma)
+  p.hi = stats::pnorm(hi, mu, sigma)
+  u = stats::runif(n, p.lo, p.hi)
+  return(qnorm (u, mu, sigma))
 }
 
 

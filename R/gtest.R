@@ -58,7 +58,7 @@ g.test = function(x, y = NULL, correct="none",
     if (length(x) != length(y))
       stop("x and y must have the same length")
     DNAME <- paste(DNAME, "and", deparse(substitute(y)))
-    OK <- complete.cases(x, y)
+    OK <- stats::complete.cases(x, y)
     x <- as.factor(x[OK])
     y <- as.factor(y[OK])
     if ((nlevels(x) < 2) || (nlevels(y) < 2))
@@ -114,7 +114,7 @@ g.test = function(x, y = NULL, correct="none",
     }
     STATISTIC <- G <- 2 * g / q
     PARAMETER <- (nrow(x)-1)*(ncol(x)-1)
-    PVAL <- 1-pchisq(STATISTIC,df=PARAMETER)
+    PVAL <- 1-stats::pchisq(STATISTIC,df=PARAMETER)
     if(correct=="none")
       METHOD <- "Log likelihood ratio (G-test) test of independence without correction"
     if(correct=="williams")
@@ -153,7 +153,7 @@ g.test = function(x, y = NULL, correct="none",
     }
     STATISTIC <- G <- 2*g/q
     PARAMETER <- length(x) - 1
-    PVAL <- pchisq(STATISTIC, PARAMETER, lower.tail = FALSE)
+    PVAL <- stats::pchisq(STATISTIC, PARAMETER, lower.tail = FALSE)
   }
   names(STATISTIC) <- "Log likelihood ratio statistic (G)"
   names(PARAMETER) <- "X-squared df"

@@ -231,19 +231,19 @@ plot_volcano = function(FC, PV, FC_cutoff=2, PV_cutoff=.05, figtitle='') {
   if(num_replace) {
     tmp_y[ppos] = jitter(rep(19.5, times=num_replace) )
   }
-  # par(mar=c(3,3,3,3))
+  # graphics::par(mar=c(3,3,3,3))
   xlimits = max(abs(FC)) + .2
   ylimits = max(tmp_y) + .2
-  par(mfcol=c(1,1))
+  graphics::par(mfcol=c(1,1))
   plot(tmp_x, tmp_y, pch=20, xlim=c(-xlimits,xlimits), ylim=c(0,ylimits),
        # add label to significantly different proteins
   xlab='FC', ylab='-log10(p-value)',  main=figtitle)
-  lines(c(-(xlimits+2),(xlimits+2)), c(-log10(PV_cutoff),
+  graphics::lines(c(-(xlimits+2),(xlimits+2)), c(-log10(PV_cutoff),
                                        -log10(PV_cutoff)), col='blue')
   # also same as
-  abline(h = -log10(.1), col='blue', lty=2) # permanent line for now
-  lines(c(-FC_cutoff,-FC_cutoff), c(-10, 70), col='blue')
-  lines(c(FC_cutoff,FC_cutoff), c(-10, 70), col='blue')
+  graphics::abline(h = -log10(.1), col='blue', lty=2) # permanent line for now
+  graphics::lines(c(-FC_cutoff,-FC_cutoff), c(-10, 70), col='blue')
+  graphics::lines(c(FC_cutoff,FC_cutoff), c(-10, 70), col='blue')
 }
 
 
@@ -301,7 +301,7 @@ plot_volcano_wLab = function(FC, PV, ProtID,
   plotdata = data.frame(FC, PV, ProtID) # combine into 2 data frame
   ppos_rep = plotdata$PV == 0
   plotdata$PV[ppos_rep] = .000000001
-  plotdata = mutate(plotdata, log_PV=-log10(PV))
+  plotdata = dplyr::mutate(plotdata, log_PV=-log10(PV))
   plotdata$threshold = as.factor(abs(plotdata$FC) >= FC_cutoff & plotdata$PV < PV_cutoff)
   dim(plotdata)
 
@@ -779,7 +779,7 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
   # BH adjustment - only values on interval [0 1]
   # we may have 2 if g.test cannot be performed
   ppos = y_out[,2] <= 1
-  y_out[ppos,3] = p.adjust(y_out[ppos,2],"BH")
+  y_out[ppos,3] = stats::p.adjust(y_out[ppos,2],"BH")
   y_out[!ppos,3] = 1 # these would have been 2 in Raw p-values
 
   # XsqDF returned from the g-test is not useful,
@@ -1077,7 +1077,7 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   ## mmin = min(p_vals)
   ## mmax = max(p_vals)
   ## adj_PV = (p_vals - mmin) / (mmax-mmin)
-  adj_PV = p.adjust(p_vals, method = 'BH')
+  adj_PV = stats::p.adjust(p_vals, method = 'BH')
   FC = rowMeans(FCs)
 
   # protein info is on peptide level, so convert to

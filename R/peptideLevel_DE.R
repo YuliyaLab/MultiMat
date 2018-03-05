@@ -92,23 +92,23 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
       # res = lm(yy ~ treatment + peptide,
       # contrasts = list(treatment="contr.sum", peptide="contr.sum") )
       # baseline grp = 1st in aphanumeric order
-      res = lm(yy ~ treatment + peptide, contrasts = list(peptide="contr.sum"))
+      res = stats::lm(yy ~ treatment + peptide, contrasts = list(peptide="contr.sum"))
       res1 = summary(res) # above line only good for 2 groups?
       # col 3 reserved for BH p-values
-      y_out[kk,c(1,2,4)] = coefficients(res1)[2,c(1,4,3)]
+      y_out[kk,c(1,2,4)] = stats::coefficients(res1)[2,c(1,4,3)]
       treatment = treatment_hold
     } else {
       # res =  lm(yy~treatment, contrasts=list(treatment="contr.sum"))
-      res =  lm(yy~treatment) # only good for 2 groups?
+      res =  stats::lm(yy~treatment) # only good for 2 groups?
       res1 = summary(res)
       # col 3 reserved for BH p-values
-      y_out[kk,c(1,2,4)] = coefficients(res1)[2,c(1,4,3)]
+      y_out[kk,c(1,2,4)] = stats::coefficients(res1)[2,c(1,4,3)]
     }                      # coefs, p-value, t-value
   } #end for each protein
 
   colnames(y_out) = c('FC', 'P_val', 'BH_P_val', 'statistic', 'num_peptides')
   # BH adjustment
-  y_out[,3] = p.adjust(y_out[,2],"BH")
+  y_out[,3] = stats::p.adjust(y_out[,2],"BH")
 
   # add protein names as 1st col in a data frame
   DE_res = data.frame(all.proteins, y_out, stringsAsFactors=FALSE)
@@ -179,7 +179,7 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
                                     imp_mm, imp_prot.info, prot_to_plot,
                                     prot_to_plot_col,
                                     gene_name, gene_name_col, mylabs) {
-  par(mfcol=c(1,3))
+  graphics::par(mfcol=c(1,3))
   # ppos = sorted_prot.info[,2] == 'O15233'  #  Q6QHH9 Q7Z384
   ppos = imp_prot.info[,prot_to_plot_col] == prot_to_plot
   tmp = imp_mm[ppos,]
@@ -208,15 +208,15 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
   # paste(imageoutdir, '/', alldirnames[ii], '_mC_heat_bySize.png', sep='')
   # png(outfnames_png, width = 20, height = 6.4, units = 'in', res = 400)
   # R cannot figue out how & when res is specifed... (?)
-  par(mfcol=c(1,3))
-  par(mar=c(10,3,3,3))
+  graphics::par(mfcol=c(1,3))
+  graphics::par(mar=c(10,3,3,3))
   # may need to transpose ylim will be dynamically set here,
   # and kept for the other plots
-  matplot(t(tmp), type="l", main=main_title, xaxt = "n", ylim=myylim)
-  axis(1, at=1:length(mylabs), labels=mylabs, las=3)
-  matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35))
-  lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
-  limits = par("usr")  # upper and low ylim and upper and lower xlim
+  graphics::matplot(t(tmp), type="l", main=main_title, xaxt = "n", ylim=myylim)
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs, las=3)
+  graphics::matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35))
+  graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
+  limits = graphics::par("usr")  # upper and low ylim and upper and lower xlim
   limits
   # myylim = c(limits[3]-3, limits[4])
   myxlim = c(limits[1], limits[2])
@@ -229,20 +229,20 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
   # could not normalize as all obs missing in 1+ group...
   if(dim(tmp)[1] == 0 ) { tmp = tmp2 }
   main_title = paste(gene_name, ' (', prot_to_plot, ') Normalized', sep='')
-  matplot(t(tmp), type="l", pch='19',  main=main_title,
+  graphics::matplot(t(tmp), type="l", pch='19',  main=main_title,
           ylim=myylim, xlim=myxlim, xaxt = "n") # may need to transpose
-  axis(1, at=1:length(mylabs), labels=mylabs, las=3)
-  matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35)) #may need to transpose
-  lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs, las=3)
+  graphics::matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35)) #may need to transpose
+  graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
 
 
   main_title = paste(gene_name, ' (', prot_to_plot, ') Raw', sep='')
   # may need to transpose
-  matplot(t(tmp2), type="l", main=main_title, ylim=myylim, xaxt = "n")
-  axis(1, at=1:length(mylabs), labels=mylabs, las=3)
-  matpoints(t(tmp2), type="p", pch='*') # , ylim=c(15,35))
-  lines(colMeans(tmp2,na.rm = TRUE), lwd=3, col='black')
-  par(mar=c(3,3,3,3))
+  graphics::matplot(t(tmp2), type="l", main=main_title, ylim=myylim, xaxt = "n")
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs, las=3)
+  graphics::matpoints(t(tmp2), type="p", pch='*') # , ylim=c(15,35))
+  graphics::lines(colMeans(tmp2,na.rm = TRUE), lwd=3, col='black')
+  graphics::par(mar=c(3,3,3,3))
   # dev.off()
 }
 
@@ -263,10 +263,10 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
 #' @return Nil
 plot_1prot = function(mm, prot.info, prot_to_plot, prot_to_plot_col,
                            gene_name, gene_name_col, colors, mylabs) {
-  par(mfcol=c(1,1))
+  graphics::par(mfcol=c(1,1))
   #main_title = paste(gene_name, ' (', prot_to_plot,
     # ') Normalized & Imputed', sep='')
-  par(mar=c(10,3,3,3))
+  graphics::par(mar=c(10,3,3,3))
   ppos = prot.info[,prot_to_plot_col] == prot_to_plot
   tmp = mm[ppos,]
   if(sum(ppos) == 1) {
@@ -275,11 +275,11 @@ plot_1prot = function(mm, prot.info, prot_to_plot, prot_to_plot_col,
   }
   # may need to transpose ylim will be dynamically set here,
   # and kept for the other plots
-  matplot(t(tmp), type="l", main=prot_to_plot, xaxt = "n", col=colors)
-  axis(1, at=1:length(mylabs), labels=mylabs, las=3)
-  matpoints(t(tmp), type="p", pch='*', col=colors)
-  lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
-  par(mar=c(3,3,3,3))
+  graphics::matplot(t(tmp), type="l", main=prot_to_plot, xaxt = "n", col=colors)
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs, las=3)
+  graphics::matpoints(t(tmp), type="p", pch='*', col=colors)
+  graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
+  graphics::par(mar=c(3,3,3,3))
 }
 
 
@@ -290,7 +290,7 @@ plot_3_peptide_trends = function(mm, prot.info, sorted_norm_m,
                                  imp_prot.info, prot_to_plot,
                                  gene_name, mylabs) {
 
-  par(mfcol=c(1,3))
+  graphics::par(mfcol=c(1,3))
     # ppos = sorted_prot.info[,2] == 'O15233'  #  Q6QHH9 Q7Z384
   ppos = imp_prot.info[,2] == prot_to_plot
   tmp = imp_mm[ppos,]
@@ -316,16 +316,16 @@ print(paste(myylim, sep=' '))
 
   #paste(imageoutdir, '/', alldirnames[ii], '_mC_heat_bySize.png', sep='')
   outfnames_png = paste(gene_name, '_', prot_to_plot, '_3pepTrends.png',sep='')
-  png(outfnames_png, width = 20, height = 6.4, units = 'in', res = 400)
+  grDevices::png(outfnames_png, width = 20, height = 6.4, units = 'in', res = 400)
   # R cannot figue out how & when res is specifed... (?)
-  par(mfcol=c(1,3))
-  matplot(t(tmp), type="l", main=main_title, xaxt = "n", ylim=myylim)
+  graphics::par(mfcol=c(1,3))
+  graphics::matplot(t(tmp), type="l", main=main_title, xaxt = "n", ylim=myylim)
   # may need to transpose ylim will be dynamically set here,
   # and kept for the other plots
-  axis(1, at=1:length(mylabs), labels=mylabs)
-  matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35))
-  lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
-  limits = par("usr")  # upper and low ylim and upper and lower xlim
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs)
+  graphics::matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35))
+  graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
+  limits = graphics::par("usr")  # upper and low ylim and upper and lower xlim
   limits
   # myylim = c(limits[3]-3, limits[4])
   myxlim = c(limits[1], limits[2])
@@ -338,21 +338,21 @@ print(paste(myylim, sep=' '))
   # could not normalize as all obs missing in 1+ group...
   if(dim(tmp)[1] == 0 ) { tmp = tmp2 }
   main_title = paste(gene_name, ' (', prot_to_plot, ') Normalized', sep='')
-  matplot(t(tmp), type="l", pch='19',  main=main_title,
+  graphics::matplot(t(tmp), type="l", pch='19',  main=main_title,
           ylim=myylim, xlim=myxlim, xaxt = "n") # may need to transpose
-  axis(1, at=1:length(mylabs), labels=mylabs)
-  matpoints(t(tmp), type="p", pch='*')
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs)
+  graphics::matpoints(t(tmp), type="p", pch='*')
   # , ylim=c(15,35)) # may need to transpose
-  lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
+  graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
 
 
   main_title = paste(gene_name, ' (', prot_to_plot, ') Raw', sep='')
   # may need to transpose
-  matplot(t(tmp2), type="l", main=main_title, ylim=myylim, xaxt = "n")
-  axis(1, at=1:length(mylabs), labels=mylabs)
-  matpoints(t(tmp2), type="p", pch='*') # , ylim=c(15,35))
-  lines(colMeans(tmp2,na.rm = TRUE), lwd=3, col='black')
-  dev.off()
+  graphics::matplot(t(tmp2), type="l", main=main_title, ylim=myylim, xaxt = "n")
+  graphics::axis(1, at=1:length(mylabs), labels=mylabs)
+  graphics::matpoints(t(tmp2), type="p", pch='*') # , ylim=c(15,35))
+  graphics::lines(colMeans(tmp2,na.rm = TRUE), lwd=3, col='black')
+  grDevices::dev.off()
 }
 
 
