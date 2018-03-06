@@ -31,8 +31,8 @@ estimate Pi by default. Note: spline smoothing
 can sometimes produce values of Pi outside the range of
 possible values.}
 
-\item{sseed}{random seed to use in imputation, set this seed to allow to reporoduce
-the values in future runs.}
+\item{sseed}{random seed to use in imputation, set this seed to allow to
+reporoduce the values in future runs.}
 }
 \value{
 A structure with multiple components

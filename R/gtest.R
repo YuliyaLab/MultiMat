@@ -15,9 +15,9 @@
 #'
 #'
 #' @param x vector of boolean values corresponding to presence & absence
-#'          eg: c(TRUE, TRUE, FALSE, FALSE) for present present absent absent values
-#'          Order of TRUE/FALSE does not matter, can be used interchangeably.
-#'          Same length as parameter y
+#'          eg: c(TRUE, TRUE, FALSE, FALSE) for present present absent absent
+#'          values. Order of TRUE/FALSE does not matter, can be used
+#'          interchangeably. Same length as parameter y
 #'
 #' @param y vector treatments (factor) corresponding to values in x,
 #'            same length as x
@@ -100,30 +100,33 @@ g.test = function(x, y = NULL, correct="none",
     # no monte-carlo
     # calculate G
     g <- 0
-    for (i in 1:nrows){
-      for (j in 1:ncols){
+    for (i in seq(1,nrows)) {
+      for (j in seq(1,ncols)) {
         if (x[i,j] != 0) g <- g + x[i,j] * log(x[i,j]/E[i,j])
       }
     }
     q <- 1
     if (correct=="williams"){ # Do Williams' correction
       row.tot <- col.tot <- 0
-      for (i in 1:nrows){ row.tot <- row.tot + 1/(sum(x[i,])) }
-      for (j in 1:ncols){ col.tot <- col.tot + 1/(sum(x[,j])) }
+      for (i in seq(1,nrows)) { row.tot <- row.tot + 1/(sum(x[i,])) }
+      for (j in seq(1,ncols)) { col.tot <- col.tot + 1/(sum(x[,j])) }
       q <- 1+ ((n*row.tot-1)*(n*col.tot-1))/(6*n*(ncols-1)*(nrows-1))
     }
     STATISTIC <- G <- 2 * g / q
     PARAMETER <- (nrow(x)-1)*(ncol(x)-1)
     PVAL <- 1-stats::pchisq(STATISTIC,df=PARAMETER)
     if(correct=="none")
-      METHOD <- "Log likelihood ratio (G-test) test of independence without correction"
+      METHOD =
+      "Log likelihood ratio/G test of independence without correction"
     if(correct=="williams")
-      METHOD <- "Log likelihood ratio (G-test) test of independence with Williams' correction"
+      METHOD =
+      "Log likelihood ratio/G test of independence with Williams' correction"
     if(correct=="yates")
-      METHOD <- "Log likelihood ratio (G-test) test of independence with Yates' correction"
+      METHOD =
+      "Log likelihood ratio/G test of independence with Yates' correction"
   } else {
     # x is not a matrix, so we do Goodness of Fit
-    METHOD <- "Log likelihood ratio (G-test) goodness of fit test"
+    METHOD = "Log likelihood ratio/G goodness of fit test"
     if (length(x) == 1)
       stop("x must at least have 2 elements")
     if (length(x) != length(p))
@@ -144,7 +147,7 @@ g.test = function(x, y = NULL, correct="none",
     }
     names(E) <- names(x)
     g <- 0
-    for (i in 1:length(x)){
+    for (i in seq(1,length(x)) ) {
       if (x[i] != 0) g <- g + x[i] * log(x[i]/E[i])
     }
     q <- 1
@@ -155,9 +158,9 @@ g.test = function(x, y = NULL, correct="none",
     PARAMETER <- length(x) - 1
     PVAL <- stats::pchisq(STATISTIC, PARAMETER, lower.tail = FALSE)
   }
-  names(STATISTIC) <- "Log likelihood ratio statistic (G)"
-  names(PARAMETER) <- "X-squared df"
-  names(PVAL) <- "p.value"
+  names(STATISTIC) = "Log likelihood ratio statistic (G)"
+  names(PARAMETER) = "X-squared df"
+  names(PVAL) = "p.value"
   structure(list(statistic=STATISTIC,parameter=PARAMETER,p.value=PVAL,
             method=METHOD,data.name=DNAME, observed=x, expected=E),
             class="htest")

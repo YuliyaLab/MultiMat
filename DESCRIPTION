@@ -3,9 +3,14 @@ Type: Package
 Title: Multi matrix analysis of multiple proteomics datasets on peptide level
 Version: 0.1.0
 Author: Yuliya V karpievitch
-Maintainer: Yuliya V karpievitch <yuliya.k@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: Yuliya V Karpievitch <yuliya.k@gmail.com>
+Description: MultiMat is a statistical method to perform model-based peptide-level 
+             differential expression analysis of multiple datasets. MultiMat produces 
+             a single fold change and p-value for each protein across multiple datasets. 
+             Model-based peptide-level differential expression analysis component of 
+             MultiMat package can also be used on a single dataset and will follow the 
+             analysis described in  “A statistical framework for protein quantitation 
+             in bottom-up MS-based proteomics” (Karpievitch et al. 2009).  
 Depends: R (>= 3.4.0)
 License: MIT
 Encoding: UTF-8

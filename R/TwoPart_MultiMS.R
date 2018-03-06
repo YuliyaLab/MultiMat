@@ -7,19 +7,22 @@
 
 #' hs_peptides - peptide-level intensities for human
 #'
-#' A dataset containing the protein and petide information and peptide-level intensities
-#' for 6 samples: 3 CG and 3 mCG groups. There are 69 proteins.
+#' A dataset containing the protein and petide information and peptide-level
+#' intensities for 6 samples: 3 CG and 3 mCG groups. There are 69 proteins.
 #' The columns are as follows:
 #'
 #' \itemize{
-#'   \item Sequence - peptide sequence - randomly chosen from a larger list of sequences
+#'   \item Sequence - peptide sequence - randomly chosen from a larger list of
+#'         sequences
 #'   \item MatchedID - numeric ID that links proteins in the two datasets,
 #'         unnecessary if datasets are for the same species
 #'   \item ProtID - protein ID, artificial protein ID, eg. Prot1, Prot2, ...
 #'   \item GeneID - gene ID, artificial gene ID, eg. Gene1, Gene2, ...
 #'   \item ProtName - artificial Protein Name
-#'   \item ProtIDLong - long protein ID, full protein name, here artificially simulated
-#'   \item GeneIDLong - long gene ID, full gene name, here artificially simulated
+#'   \item ProtIDLong - long protein ID, full protein name, here artificially
+#'         simulated
+#'   \item GeneIDLong - long gene ID, full gene name, here artificially
+#'         simulated
 #'   \item CG1 - raw intensity column for sample 1 in CG group
 #'   \item CG2 - raw intensity column for sample 2 in CG group
 #'   \item CG3 - raw intensity column for sample 3 in CG group
@@ -32,25 +35,28 @@
 #' @keywords datasets
 #' @name hs_peptides
 #' @usage data(hs_peptides)
-#' @format A data frame with 695 rows and 13 colummns, compiring 7 columns of metadata
-#'        and 6 columns of peptide intensities. 69 proteins.
+#' @format A data frame with 695 rows and 13 colummns, compiring 7 columns of
+#'        metadata and 6 columns of peptide intensities. 69 proteins.
 NULL
 
 #' mm_peptides - peptide-level intensities for mouse
 #'
-#' A dataset containing the protein and petide information and peptide-level intensities
-#' for 6 samples: 3 CG and 3 mCG groups. There are 69 proteins.
+#' A dataset containing the protein and petide information and peptide-level
+#' intensities for 6 samples: 3 CG and 3 mCG groups. There are 69 proteins.
 #' The columns are as follows:
 #'
 #' \itemize{
-#'   \item Sequence - peptide sequence - randomly chosen from a larger list of sequences
+#'   \item Sequence - peptide sequence - randomly chosen from a larger list of
+#'         sequences
 #'   \item MatchedID - numeric ID that links proteins in the two datasets,
 #'         unnecessary if datasets are for the same species
 #'   \item ProtID - protein ID, artificial protein ID, eg. Prot1, Prot2, ...
 #'   \item GeneID - gene ID, artificial gene ID, eg. Gene1, Gene2, ...
 #'   \item ProtName - artificial Protein Name
-#'   \item ProtIDLong - long protein ID, full protein name, here artificially simulated
-#'   \item GeneIDLong - long gene ID, full gene name, here artificially simulated
+#'   \item ProtIDLong - long protein ID, full protein name, here artificially
+#'         simulated
+#'   \item GeneIDLong - long gene ID, full gene name, here artificially
+#'         simulated
 #'   \item CG1 - raw intensity column for sample 1 in CG group
 #'   \item CG2 - raw intensity column for sample 2 in CG group
 #'   \item CG3 - raw intensity column for sample 3 in CG group
@@ -63,8 +69,8 @@ NULL
 #' @keywords datasets
 #' @name mm_peptides
 #' @usage data(mm_peptides)
-#' @format A data frame with 1102 rows and 13 colummns, compiring 7 columns of metadata
-#'        and 6 columns of peptide intensities. 69 proteins.
+#' @format A data frame with 1102 rows and 13 colummns, compiring 7 columns of
+#'         metadata and 6 columns of peptide intensities. 69 proteins.
 NULL
 
 
@@ -127,7 +133,7 @@ make_meta = function(mm, use_cols) {
 #'   quantitation in bottom-up MS-based proteomics".  PMID: 19535538
 #'
 #' @param mm a dataframe of raw intensities in format:
-#'  (# peptides) x (# samples + possibly peptide & protein information (metadata))
+#'  (# peptides)x(# samples + possibly peptide & protein information (metadata))
 #'
 #' @param use_cols vector of column indecies that make up the intensities
 #'              usually in sequential order but do not have to be
@@ -302,7 +308,8 @@ plot_volcano_wLab = function(FC, PV, ProtID,
   ppos_rep = plotdata$PV == 0
   plotdata$PV[ppos_rep] = .000000001
   plotdata = dplyr::mutate(plotdata, log_PV=-log10(PV))
-  plotdata$threshold = as.factor(abs(plotdata$FC) >= FC_cutoff & plotdata$PV < PV_cutoff)
+  plotdata$threshold = as.factor(abs(plotdata$FC) >= FC_cutoff
+                                 & plotdata$PV < PV_cutoff)
   dim(plotdata)
 
   ggplot() + geom_point(data=plotdata, aes(x=FC, y=log_PV), alpha=0.5, size=1) +
@@ -384,10 +391,11 @@ plot_volcano_wLab = function(FC, PV, ProtID,
 #'              this will take a while, test code
 #'              with fewer permutations
 #' @param setseed random number generator seed, default = 12345
-#' @param dataset_suffix vector of character strings that corresponds to the dataset
-#'        being analysed. Same length as mm_list. Names will be appended to the columns
-#'        names that will be generated for each analysed dataset. For example, if analysing
-#'        mouse and human data this vector may be: c('Mouse', 'Human')
+#' @param dataset_suffix vector of character strings that corresponds to the
+#'        dataset being analysed. Same length as mm_list. Names will be appended
+#'        to the columns names that will be generated for each analysed dataset.
+#'        For example, if analysing mouse and human data this vector may be:
+#'        c('Mouse', 'Human')
 #' @return data frame with the following columns
 #' \describe{
 #'   \item{protIDused}{Column containing the protien IDs used to
@@ -488,7 +496,8 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
   # select proteins that were detected in each experiment
   # make a list of unique protein IDs for each matrix in the list mm_list
   # grps will not change
-  subset_data = subset_proteins(mm_list=mm_list, prot.info=prot.info, prot_col_name)
+  subset_data = subset_proteins(mm_list=mm_list, prot.info=prot.info,
+                                prot_col_name)
   # names(subset_data)
   # "sub_mm_list"  "sub_prot.info"  "sub_unique_mm_list"
   # "sub_unique_prot.info"  "common_list"
@@ -501,7 +510,7 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
   tt = colnames(sub_prot.info[[1]])
   ttt = tt == prot_col_name
   # should be position of the column that was passed in for ID
-  pos_prot_id_col = (1:length(tt))[ttt]
+  pos_prot_id_col = seq(1,length(tt))[ttt]
 
   ## Tstat = CalcT(data, groups)  # my test here return t-stat
   # for each dataset loop through, compute, and add up t-stat values
@@ -557,10 +566,10 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
   ##          function(x) (0.5+sum(abs(PermT[x,]) >= abs(Tstat[x])))/(n.perm+1))
   # cannot do sapllay, our test is more complicated on peptide level
   tstat_perm = list()
-  for(ii in 1:nsets) {
+  for(ii in seq(1,nsets)) {
     print(paste('Dataset', as.character(ii) ) )
     tstat_perm[[ii]] = NULL
-    for(jj in 1:nperm) {
+    for(jj in seq(1,nperm)) {
       # get permuted labels for each iteration, then compute T_p
       perm_pos = sample(length(treat[[ii]]), length(treat[[ii]]) )
       tmp = peptideLevel_DE(sub_mm_list[[ii]],
@@ -583,17 +592,19 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
   num_prot = dim(tstat)[1]
   p_vals = vector('numeric', length=num_prot)
   pos_stat_pos = sum_tstat >= 0
-  for(ii in 1:2) { # positive and negative values separately
+  for(ii in seq(1,2)) { # positive and negative values separately
     if(ii == 1) {
       ppos = which(pos_stat_pos)
-      for(kk in 1:length(ppos)) {
+      for(kk in seq(1,length(ppos))) {
         # (0.5+sum(PermTSq[x,] >= TstatSq[x]))/(n.perm+1)
-        p_vals[ppos[kk]] = (.5+sum(T_perm[ppos[kk],] >= sum_tstat[ppos[kk]])) / (nperm+1)
+        p_vals[ppos[kk]] = (.5+sum(T_perm[ppos[kk],] >=
+                                     sum_tstat[ppos[kk]])) / (nperm+1)
       }
     } else {
       ppos = which(!pos_stat_pos)
-      for(kk in 1:length(ppos)) {
-        p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] < sum_tstat[ppos[kk]])) / (nperm+1)
+      for(kk in seq(1,length(ppos))) {
+        p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] <
+                                      sum_tstat[ppos[kk]])) / (nperm+1)
       }
     }
   }
@@ -719,13 +730,13 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
   u_treat = unique(treatment)
   numgrps = length(u_treat)
   numeeachgroup =  vector('numeric', length=numgrps)
-  for(ii in 1:numgrps) {
+  for(ii in seq(1,numgrps)) {
     numeeachgroup[ii] = sum(treatment == u_treat[ii])
   } # needed for the FC estimation
 
   de_ret = NULL
   u_prot_info = NULL
-  for (kk in 1:length(all.proteins)) {
+  for (kk in seq(1,length(all.proteins))) {
     #if(kk == 4) browser()
     prot = all.proteins[kk]
     pmid.matches = prot.info[prot.info[,pr_ppos]==prot,1]
@@ -794,7 +805,7 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
   de_ret$prot.info = u_prot_info
 
   num_obs =  matrix(0, length(all.proteins), numgrps)
-  for(ii in 1:numgrps) {
+  for(ii in seq(1,numgrps)) {
     num_obs[,ii] = de_ret$DE_res$num_peptides * numeeachgroup[ii]
   }
   percmiss = nummiss / num_obs
@@ -956,7 +967,7 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   tt = colnames(sub_prot.info[[1]])
   ttt = tt == prot_col_name
   # should be position of the column that was passed in for ID
-  pos_prot_id_col = (1:length(tt))[ttt]
+  pos_prot_id_col = seq(1,length(tt))[ttt]
   # mmsCA[[1]], treatsCA[[1]], protinfos[[1]], pr_ppos=2)
   tmp = peptideLevel_PresAbsDE(sub_mm_list[[1]],
                                treat[[1]], sub_prot.info[[1]],
@@ -1016,10 +1027,10 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   ##    function(x) (0.5+sum(abs(PermT[x,]) >= abs(Tstat[x])))/(n.perm+1))
   # cannot do sapllay, our test is more complicated on peptide level
   tstat_perm = list()
-  for(ii in 1:nsets) {
+  for(ii in seq(1,nsets)) {
     print(paste('Dataset', as.character(ii) ) )
     tstat_perm[[ii]] = NULL
-    for(jj in 1:nperm) {
+    for(jj in seq(1,nperm)) {
       # get permuted labels for each iteration, then compute T_p
         #  sub_mm_list[[1]], treat[[1]], sub_prot.info[[1]], pr_ppos=2)
       perm_pos = sample(length(treat[[ii]]), length(treat[[ii]]) )
@@ -1047,19 +1058,21 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   num_prot = dim(tstat)[1]
   p_vals = vector('numeric', length=num_prot)
   pos_stat_pos = sum_tstat >= 0
-  for(ii in 1:num_prot) { # positive and negative values separately
+  for(ii in seq(1,num_prot)) { # positive and negative values separately
     if(ii == 1) {
     p_vals[ii] = (.5+ sum(T_perm[ii,] >= sum_tstat[ii])) / (nperm+1)
     #if(ii == 1) { If was comment out
       ppos = which(pos_stat_pos)
-      for(kk in 1:length(ppos)) {
+      for(kk in seq(1,length(ppos))) {
         # (0.5+sum(PermTSq[x,] >= TstatSq[x]))/(n.perm+1)
-        p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] >= sum_tstat[ppos[kk]])) / (nperm+1)
+        p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] >=
+                                      sum_tstat[ppos[kk]])) / (nperm+1)
       }
     } else {
       ppos = which(!pos_stat_pos)
-      for(kk in 1:length(ppos)) {
-        p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] < sum_tstat[ppos[kk]])) / (nperm+1)
+      for(kk in seq(1,length(ppos))) {
+        p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] <
+                                      sum_tstat[ppos[kk]])) / (nperm+1)
       }
     }
   }
@@ -1084,7 +1097,7 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   # the protein level info, no duplication
   # take prot IDs from dataset 1
   unik = !duplicated(sub_prot.info[[1]][,prot_col_name])
-  ppos_u_prots = seq_along(sub_prot.info[[1]][,prot_col_name])[unik]  ## indices
+  ppos_u_prots = seq_along(sub_prot.info[[1]][,prot_col_name])[unik]  # indices
   u_prot_info = sub_prot.info[[1]][ppos_u_prots,]
 
   res = data.frame(protIDused=PROTIDS, FC, P_val=p_vals,
@@ -1202,13 +1215,13 @@ subset_proteins = function(mm_list, prot.info, prot_col_name) {
   numuprots = vector('numeric', ll)
   common_list = ''
   uprots = list()
-  for(ii in 1:ll) {
+  for(ii in seq(1,ll)) {
     uprots[[ii]] = unique(prot.info[[ii]][,c(prot_col_name)])
     numuprots = length(uprots[[ii]])
     if(ii == 1) {
       common_list = uprots[[ii]]
     } else {
-      # match protein names across multiple datasets, keep only ones that overlap
+      # match protein names across multiple datasets, keep only overlapping ones
       common_list = intersect(common_list,uprots[[ii]])
     }
   }
@@ -1225,7 +1238,7 @@ subset_proteins = function(mm_list, prot.info, prot_col_name) {
   sub_unique_mm_list = list()
   sub_unique_prot.info = list()
 
-  for(ii in 1:ll) {
+  for(ii in seq(1,ll)) {
     ppos = prot.info[[ii]][,c(prot_col_name)] %in% common_list
     sub_mm_list[[ii]] = mm_list[[ii]][ppos,]
     sub_prot.info[[ii]] = prot.info[[ii]][ppos,]
@@ -1349,9 +1362,10 @@ get_presAbs_prots = function(mm_list, prot.info,
   ll = length(mm_list)
   presAbs_ints = list()
   presAbs_prot.info = list()
-  for(ii in 1:ll) {
+  for(ii in seq(1,ll)) {
     # negation of these are what we want...
-    prots_removed_pos = prot.info[[ii]][,c(prot_col_name)] %in% protnames_norm[[ii]]
+    prots_removed_pos = prot.info[[ii]][,c(prot_col_name)] %in%
+      protnames_norm[[ii]]
     # peptides kept
     print(paste('Number of peptides normalized:',sum(prots_removed_pos) ) )
     # peptides eliminated

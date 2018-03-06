@@ -7,18 +7,6 @@
 # Written by Yuliya Karpievitch, Tom Taverner, and Shelley Herbrich
 # for TAMU, PPNNL and community
 
-#   source('MBfilter.r')
-#   source('MBImpute.r')
-#   fnameLum = 'D:/yuliya/pnnl_cod/my_functions/data/proteins2_lumican_anthithr.txt'
-#   datasetLum = read.table(fnameLum, header=TRUE, sep="\t")
-#   trLum = c(1,1,1,1,1,1,1,1,1,1, 2,2,2,2,2,2,2,2,2,2)
-#   resMBfilter = MBfilter(datasetLum[,-(1:2)], trLum, datasetLum[,1:2],
-#                          pr_ppos=2, my.pi=.05)
-#
-#   resMBimpute = MBimpute(resMBfilter$y_filtered,trLum,
-#                          resMBfilter$ft_prot.info,pr_ppos=2)
-
-
 
 #' Model-Based Imputation of missing values
 #'
@@ -45,8 +33,8 @@
 #'              estimate Pi by default. Note: spline smoothing
 #'              can sometimes produce values of Pi outside the range of
 #'              possible values.
-#' @param sseed random seed to use in imputation, set this seed to allow to reporoduce
-#'              the values in future runs.
+#' @param sseed random seed to use in imputation, set this seed to allow to
+#'              reporoduce the values in future runs.
 #'
 #' @return A structure with multiple components
 #' \describe{
@@ -103,7 +91,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
   imp_prot.info = NULL
   cat("Imputing...\n")
 
-  for (kk in 1:length(all.proteins)){
+  for (kk in seq(1,length(all.proteins))) {
     #if(kk == 191) browser()
     prot = all.proteins[kk]
     pmid.matches = prot.info[prot.info[,pr_ppos]==prot,1]
@@ -128,13 +116,13 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     n.peptide = nrow(y_raw)
     yy = as.vector(t(y_raw))
     nn = length(yy)
-    peptide =rep(1:n.peptide, each=dim(data.frame(treatment))[1])
+    peptide =rep(seq(1,n.peptide), each=dim(data.frame(treatment))[1])
 
     # filter out min.missing
     n.present = array(NA, c(n.peptide, n.u.treatment))
     colnames(n.present) = unique(treatment)
 
-    for(jj in 1:n.u.treatment) {
+    for(jj in seq(1, n.u.treatment) ){
        n.present[,jj] = rowSums(!is.na(y_raw[,treatment==unique(treatment)[jj],
                                              drop=FALSE]))
     }
@@ -147,7 +135,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     # keep track of pepIDs and prIDs here...
     if (nrow(y_raw) == 0) next
     # c.guess = min(yy, na.rm=TRUE) # def. not used #tim
-	  peptide = rep(1:n.peptide, each=dim(data.frame(treatment))[1])
+	  peptide = rep(seq(1,n.peptide), each=dim(data.frame(treatment))[1])
 
     # make column names for the n.present matrix
     tmp = unique(treatment)
@@ -160,14 +148,14 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     } else {
       col_names1 = vector('character', nrow_tmp)
       bob = data.frame(lapply(tmp, as.character), stringsAsFactors=FALSE)
-      for(ii in 1:nrow_tmp) {
+      for(ii in seq(1,nrow_tmp)) {
        col_names1[ii] = paste(bob[ii,1], bob[ii,2], sep='_')
       }
     }
 
     # calculate pooled variance for each protein
     grp = array(NA, c(1, n.u.treatment))
-    for (jj in 1:n.u.treatment){
+    for (jj in seq(1,n.u.treatment)) {
       grp[jj] = sum(n.present[, jj])
     }
     pep_var = 0 # yuliya: was not declared in impute only
@@ -178,7 +166,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     den = 0
     # calculate pooled variance for each peptide
     # if only 1 onservation in a dx group assign the overall variance
-    for(ii in 1:n.peptide)
+    for(ii in seq(1,n.peptide))
     {
       # which treatment has more obsertations? - use one of the 2 groups
       pep = yy[peptide==ii]
@@ -214,13 +202,14 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     # estimate rough model parameters
     # create model matrix for each protein
     # remove any missing values from consideration
-    iii = (1:nn)[is.na(yy)] # positions of the NA's
+    iii = (seq(1,nn))[is.na(yy)] # positions of the NA's
     if (n.peptide != 1){
       X  = stats::model.matrix(~f.peptide + f.treatment,
                         contrasts = list(f.treatment="contr.sum",
                                          f.peptide="contr.sum") )
     } else {
-      X = stats::model.matrix(~f.treatment, contrasts=list(f.treatment="contr.sum"))
+      X = stats::model.matrix(~f.treatment,
+                              contrasts=list(f.treatment="contr.sum"))
     }
     if(length(iii) > 0){
       y.c = yy[-iii] # remove NA value
@@ -252,13 +241,13 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
 
     zeta = dd*(c_h - y.predict)
     PHI = stats::pnorm(zeta, 0, 1)
-    # prob.cen = stats::pnorm(zeta, 0, 1)/(my.pi + (1-my.pi) * stats::pnorm(zeta, 0, 1))
+    # prob.cen = stats::pnorm(zeta, 0, 1)/(my.pi + (1-my.pi)*pnorm(zeta,0,1))
     prob.cen = PHI / ( (my.pi + (1-my.pi) * PHI) )
 
     choose.cen = stats::runif(nn) < prob.cen
     set.cen = is.na(yy) & choose.cen
     set.mar = is.na(yy) &! choose.cen
-    # kappa = my.pi + (1 - my.pi) * stats::dnorm(zeta,0, 1) # def. not used #tim
+    # kappa = my.pi + (1 - my.pi) * stats::dnorm(zeta,0, 1) # def. not used
 
     # Imputation: Replace missing values with random numbers
     #             drawn from the estimated
@@ -295,6 +284,13 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
 #'         observations missing completely at random
 #'
 #' Contributed by Shelley Herbrich & Tom Taverner for Karpievitch et al. 2009
+#' @examples
+#' data(mm_peptides)
+#' metaCols = 1:7
+#' m_logInts = make_intencities(mm_peptides, intsCols)
+#' m_prot.info = make_meta(mm_peptides, metaCols)
+#' m_logInts = convert_log2(m_logInts)
+#' my.pi = eigen_pi(m_logInts, toplot=TRUE)
 #' @export
 eigen_pi = function(m, toplot=TRUE)
 {
@@ -350,31 +346,33 @@ protein_var = function(Y_raw, treatment){
   n = length(y)
   n.treatment = length(treatment)
   n.u.treatment = length(unique(treatment))
-  peptide = rep(rep(1:n.peptide, each=n.treatment))
+  peptide = rep(seq(1:n.peptide), each=n.treatment)
 
   n.present = array(NA, c(n.peptide, n.u.treatment))
   colnames(n.present) = unique(treatment)
-  for(i in 1:n.peptide) {
-      for(j in 1:n.u.treatment){
-          n.present[i,j] = sum(!is.na(y[peptide==i & treatment==unique(treatment)[j]]))
+  for(i in seq(1,n.peptide)) {
+      for(j in seq(1,n.u.treatment)) {
+          n.present[i,j] = sum(!is.na(y[peptide==i &
+                                          treatment==unique(treatment)[j]]))
       }
   }
 
   # peptides.missing = rowSums(is.na(Y_raw)) # def. not used #tim
 
-  f.treatment = factor(rep(treatment, n.peptide)) # used in stats::model.matrix below
+  f.treatment = factor(rep(treatment, n.peptide)) # used in model.matrix below
   f.peptide = factor(peptide) #  used in stats::model.matrix below
 
   # estimate rough model parameters
   # create model matrix for each protein and
   # remove any peptides with missing values
-  ii = (1:n)[is.na(y)]
+  ii = seq(1,n)[is.na(y)]
   if (n.peptide != 1){
     X  = stats::model.matrix(~f.peptide + f.treatment,
                       contrasts = list(f.treatment="contr.sum",
                                        f.peptide="contr.sum") )
   } else {
-    X = stats::model.matrix(~f.treatment, contrasts=list(f.treatment="contr.sum"))
+    X = stats::model.matrix(~f.treatment,
+                            contrasts=list(f.treatment="contr.sum"))
   }
   if(length(ii) > 0){
     y.c = y[-ii]
@@ -402,7 +400,8 @@ protein_var = function(Y_raw, treatment){
 }
 
 my.Psi = function(x, my.pi){
-exp(log(1-my.pi)+stats::dnorm(x, 0, 1, log=TRUE)-log(my.pi+(1-my.pi) * stats::pnorm(x, 0, 1)))
+exp(log(1-my.pi)+stats::dnorm(x, 0, 1, log=TRUE) -
+      log(my.pi+(1-my.pi) * stats::pnorm(x, 0, 1)))
 }
 
 my.Psi.dash = function(x, my.pi){
@@ -417,7 +416,7 @@ rnorm.trunc = function (n, mu, sigma, lo=-Inf, hi=Inf){
   p.lo = stats::pnorm(lo, mu, sigma)
   p.hi = stats::pnorm(hi, mu, sigma)
   u = stats::runif(n, p.lo, p.hi)
-  return(qnorm (u, mu, sigma))
+  return(stats::qnorm(u, mu, sigma))
 }
 
 

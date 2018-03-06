@@ -33,10 +33,11 @@ with fewer permutations}
 
 \item{setseed}{random number generator seed, default = 12345}
 
-\item{dataset_suffix}{vector of character strings that corresponds to the dataset
-being analysed. Same length as mm_list. Names will be appended to the columns
-names that will be generated for each analysed dataset. For example, if analysing
-mouse and human data this vector may be: c('Mouse', 'Human')}
+\item{dataset_suffix}{vector of character strings that corresponds to the
+dataset being analysed. Same length as mm_list. Names will be appended
+to the columns names that will be generated for each analysed dataset.
+For example, if analysing mouse and human data this vector may be:
+c('Mouse', 'Human')}
 }
 \value{
 data frame with the following columns

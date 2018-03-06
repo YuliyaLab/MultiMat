@@ -55,8 +55,8 @@
 #           # approximate Normality.
 # prot.info = cbind(data.frame(rownames(dd)), data.frame(rownames(dd)))
 #             # peptideIDs, no PR IDs here, just duplicate column
-#             # in case od protein IDs, those are not importnat for normalization
-#             # and will be ignored.
+#             # in case od protein IDs, those are not importnat for
+#             # normalization and will be ignored.
 # ints_eig1 = eig_norm1(m=logInts, treatment=grps, prot.info=prot.info)
 # ints_norm = eig_norm2(rv=ints_eig1)
 #
@@ -86,22 +86,23 @@ plot.eigentrends = function(svdr, title1){
   ss = d^2
   Tk = signif(ss/sum(ss)* 100, 2)
 
-  titles = paste("Trend ", 1:3, " (", Tk[1:3], "%)", sep = "")
+  titles = paste("Trend ", seq(1,3), " (", Tk[seq(1,3)], "%)", sep = "")
   do.text = function(j) graphics::mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
-  range.y = range(as.numeric(v[,1:3]), na.rm=TRUE)
+  range.y = range(as.numeric(v[,seq(1,3)]), na.rm=TRUE)
 
   toplot1_1 = as.numeric(v[,1])
   toplot1_2 = as.numeric(v[,2])
   toplot1_3 = as.numeric(v[,3])
 
-  plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=FALSE, ylim=range.y)
+  plot(seq(1,length(toplot1_1) ), toplot1_1, type='b', ann=FALSE, ylim=range.y)
   do.text(1)
   graphics::abline(h=0, lty=3)
-  graphics::title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
-  plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=FALSE, ylim=range.y)
+  graphics::title(title1, cex.main = 1.2, font.main= 1, col.main= "purple",
+                  ylab=NULL)
+  plot(seq(1,length(toplot1_2) ), toplot1_2, type='b', ann=FALSE, ylim=range.y)
   do.text(2)
   graphics::abline(h=0, lty=3)
-  plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=FALSE, ylim=range.y)
+  plot(seq(1,length(toplot1_3) ), toplot1_3, type='b', ann=FALSE, ylim=range.y)
   do.text(3)
   graphics::abline(h=0, lty=3)
   return(Tk)
@@ -126,14 +127,15 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
   toplot1_2 = as.numeric(v[,(pos1+1)])
   toplot1_3 = as.numeric(v[,(pos1+2)])
 
-  plot(c(1:length(toplot1_1)), toplot1_1, type='b', ann=FALSE, ylim=range.y)
+  plot(seq(1,length(toplot1_1) ), toplot1_1, type='b', ann=FALSE, ylim=range.y)
   do.text(1)
   graphics::abline(h=0, lty=3)
-  graphics::title(title1, cex.main = 1.2, font.main= 1, col.main= "purple", ylab=NULL)
-  plot(c(1:length(toplot1_2)), toplot1_2, type='b', ann=FALSE, ylim=range.y)
+  graphics::title(title1, cex.main = 1.2, font.main= 1, col.main= "purple",
+                  ylab=NULL)
+  plot(seq(1,length(toplot1_2) ), toplot1_2, type='b', ann=FALSE, ylim=range.y)
   do.text(2)
   graphics::abline(h=0, lty=3)
-  plot(c(1:length(toplot1_3)), toplot1_3, type='b', ann=FALSE, ylim=range.y)
+  plot(seq(1,length(toplot1_3) ), toplot1_3, type='b', ann=FALSE, ylim=range.y)
   do.text(3)
   graphics::abline(h=0, lty=3)
   return(Tk)
@@ -156,8 +158,8 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
 
 #' String linear model formula suitable
 #'
-#' Makes a string linear model formula suitable for the right hand side of the equasion
-#' passed into lm()
+#' Makes a string linear model formula suitable for the right hand side of the
+#' equasion passed into lm()
 #'
 #' eig_norm1 and eig_norm2
 #' Here we incorporate the model matrix from EigenMS
@@ -170,8 +172,8 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
 #' @param var_name string variable name to use in the formula
 #' @return data structure with linea model formula and contrasts
 #'  \describe{
-#'   \item{lm.formula}{Lienar model formula suitable for right hand side of '~' in lm(),
-#'        '~ is not included int eh formula}
+#'   \item{lm.formula}{Lienar model formula suitable for right hand side of '
+#'         ~' in lm(), ~ is not included int eh formula}
 #'   \item{lm.params}{contrasts for lm(), here sum-to-zero constraint only}
 #' }
 #' @examples
@@ -249,12 +251,12 @@ makeLMFormula = function(eff, var_name='') {
 #' First portion of EigenMS: Identify eigentrends attributable to bias, allow
 #' the user to adjust the number (with causion! if desired) before normalizing
 #' with eig_norm2.
-#' Ref: "Normalization of peak intensities in bottom-up MS-based proteomics using
-#'       singular value decomposition" Karpievitch YV, Taverner T, Adkins JN,
-#'       Callister SJ, Anderson GA, Smith RD, Dabney AR. Bioinformatics 2009
+#' Ref: "Normalization of peak intensities in bottom-up MS-based proteomics
+#'       using singular value decomposition" Karpievitch YV, Taverner T, et al.
+#'       2009, Bioinformatics
 #' Ref:  "Metabolomics data normalization with EigenMS"
-#'       Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM
-#'       Submitted to PLoS ONE
+#'       Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM 2014,
+#'       PLoS ONE
 #' @param m number of peptides x number of samples matrix of log-transformed
 #'          expression data, metadata not included in this matrix
 #' @param treatment either a single factor indicating the treatment group of
@@ -339,9 +341,9 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
     ugrps = unique(grpFactors)
     udims = dim(ugrps)
     grp = NULL
-    for(ii in 1:udims[1]) {
+    for(ii in seq(1,udims[1]) ) {
       pos = grpFactors[,1] == ugrps[ii,1] # set to initial value
-      for(jj in 2:udims[2]) {
+      for(jj in seq(2, udims[2]) ) {
 	    pos = pos & grpFactors[,jj] == ugrps[ii,jj]
       }
 	  grp[pos] = rep(ii, sum(pos))
@@ -356,7 +358,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   print(grp)
 
   for(ii in 1:nrow(m)) {
-    for(jj in 1:length(unique(grp))) {
+    for(jj in seq(1, length(unique(grp))) ) {
         # total number of groups num(g1) * num(g2) * ...
       nobs[ii,jj] = sum(!is.na(m[ii, grp==unique(grp)[jj]]))
     }
@@ -377,11 +379,11 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   rownames(pres) = prot.info[which(!prot.info[,1] %in% rownames(pmiss)),1]
 
   print('Selecting complete peptides')
-  # Should issue an error message if we have NO complete peptides, unlikely event
+  # Should issue an error message if we have NO complete peptides (unlikely)
   # select only 'complete' peptides, no missing values
   nobs = array(NA, nrow(pres)) # reassign noobs to dims of 'present'
   numiter = nrow(pres)
-  for (ii in 1:numiter) {
+  for (ii in seq(1, numiter) ) {
     # if(ii %% 100 == 0) { print(ii) }
     nobs[ii] = sum(!is.na(pres[ii,]))
   }
@@ -435,8 +437,8 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   }
 
   print('Computing SVD, estimating Eigentrends...')
-  # residuals are centered around 0, here center samples not peptides/metabolites
-  # centering is basic normalization
+  # residuals are centered around 0, here center samples not
+  # peptides/metabolites centering is basic normalization
 
   # t(scale(t(R.c), center = TRUE, scale = FALSE))
   R.c_center = scale(R.c, center = TRUE, scale = FALSE)
@@ -489,9 +491,9 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
 #' EigenMS normalization
 #'
 #' Eliminate the effects of systematic bias identified in eig_norm1()
-#' Ref: "Normalization of peak intensities in bottom-up MS-based proteomics using
-#'       singular value decomposition" Karpievitch YV, Taverner T, Adkins JN,
-#'       Callister SJ, Anderson GA, Smith RD, Dabney AR. Bioinformatics 2009.
+#' Ref: "Normalization of peak intensities in bottom-up MS-based proteomics
+#'       using singular value decomposition" Karpievitch YV, Taverner T et al.
+#'       2009, Bioinformatics
 #' Ref:  "Metabolomics data normalization with EigenMS"
 #'       Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM
 #'       Submitted to PLoS ONE.
@@ -559,10 +561,10 @@ eig_norm2 = function(rv) {
   betahat_n = matrix(NA,nrow=dim(mtmp)[2],ncol=nrow(pres))
   rm(mtmp)
 
-  V0 = my.svd$v[,1:h.c,drop=FALSE]   # residual eigenpeptides
+  V0 = my.svd$v[,seq(1,h.c),drop=FALSE]   # residual eigenpeptides
 
   if(n.u.treatment == 1) { # got 1 treatment group
-    for (ii in 1:nrow(pres)) {
+    for (ii in seq(1,nrow(pres)) ) {
       if(ii%%250 == 0) { print(paste('Processing peptide ',ii))  }
       pep = pres[ii, ]
       pos = !is.na(pep)
@@ -575,7 +577,7 @@ eig_norm2 = function(rv) {
     }
 
   } else { # got 2+ treatment groups
-    for (ii in 1:nrow(pres)) {
+    for (ii in seq(1, nrow(pres)) ) {
       if(ii %% 100 == 0) { print(paste('Processing peptide ',ii))  }
       pep = pres[ii, ]
       pos = !is.na(pep)
@@ -653,7 +655,7 @@ eig_norm2 = function(rv) {
   plot.eigentrends(toplot3, "Normalized Data")
 
   print("Done with normalization!!!")
-  colnames(V0) =  paste("Trend", 1:ncol(V0), sep="_")
+  colnames(V0) =  paste("Trend", seq(1,ncol(V0)), sep="_")
 
   return(list(normalized=final, norm_m=y_rescaled, eigentrends=V0,
               norm.svd=toplot3, exPeps=exPeps))
@@ -664,7 +666,8 @@ eig_norm2 = function(rv) {
 # EigenMS helper functions
 # Tom had Sig set to 0.1, I and Storey's paper has 0.05
 # sva.id = function(dat, mod, n.u.treatment, B=500, sv.sig=0.05, seed=NULL) {
-# treatment, #' @param treatment treatment group information included in the analysis
+# treatment, #' @param treatment treatment group information included in the
+# analysis
 
 
 #' Surrogate Variable Analysis
@@ -678,8 +681,8 @@ eig_norm2 = function(rv) {
 #' @param dat number of peptides/genes x number of samples
 #'            matrix of expression data with no missing values
 #' @param n.u.treatment number of treatment groups
-#' @param lm.fm formular for treatment to be use on the right side of the call to
-#'        stats::lm() as generated by makeLMFormula()
+#' @param lm.fm formular for treatment to be use on the right side of the call
+#'        to stats::lm() as generated by makeLMFormula()
 #' @param B The number of null iterations to perform
 #' @param sv.sig The significance cutoff for the surrogate variables
 #' @param seed A seed value for reproducible results
@@ -725,7 +728,7 @@ sva.id = function(dat, n.u.treatment, lm.fm, B=500, sv.sig=0.05, seed=NULL)
 
 print("Starting Bootstrap.....")
 # Bootstrap procedure that determines the number of significant eigertrends...
-  for(ii in 1:B){
+  for(ii in seq(1, B)) {
     if(ii %% 50 == 0) { print(paste('Iteration ', ii)) }
     res0 = t(apply(res, 1, sample, replace=FALSE)) # regression
     # yuliya: not sure if this is needed at all
@@ -748,7 +751,7 @@ print("Starting Bootstrap.....")
 
 # yuliya: check p-values here, Tom had mean value...
   psv = rep(1,n)
-  for(ii in 1:ndf){
+  for(ii in seq(1,ndf)) {
 	  # psv[ii] = mean(dstat0[,ii] >= dstat[ii])
     # should this be compared to a MEAN?  Should this be dstat0[ii,] ?
     posGreater = dstat0[,ii] > dstat[ii]
@@ -788,8 +791,9 @@ mmul = function(A, B){
 #######################################################################
 #######################################################################
 my.Psi = function(x, my.pi){
-# calculates Psi
-exp(log(1-my.pi) + stats::dnorm(x, 0, 1, log=TRUE)-log(my.pi+(1-my.pi)*pnorm(x, 0, 1)))
+  # calculates Psi
+  exp(log(1-my.pi) + stats::dnorm(x, 0, 1, log=TRUE) -
+        log(my.pi + (1-my.pi) * pnorm(x, 0, 1)))
 }
 # end my.Psi
 

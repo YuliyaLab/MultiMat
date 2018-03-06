@@ -20,3 +20,11 @@ Contributed by Shelley Herbrich & Tom Taverner for Karpievitch et al. 2009
 \description{
 Compute PI - proportion of observations missing completely at random
 }
+\examples{
+data(mm_peptides)
+metaCols = 1:7
+m_logInts = make_intencities(mm_peptides, intsCols)
+m_prot.info = make_meta(mm_peptides, metaCols)
+m_logInts = convert_log2(m_logInts)
+my.pi = eigen_pi(m_logInts, toplot=TRUE)
+}

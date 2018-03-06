@@ -26,9 +26,9 @@ A structure with multiple components
 }
 \description{
 Eliminate the effects of systematic bias identified in eig_norm1()
-Ref: "Normalization of peak intensities in bottom-up MS-based proteomics using
-      singular value decomposition" Karpievitch YV, Taverner T, Adkins JN,
-      Callister SJ, Anderson GA, Smith RD, Dabney AR. Bioinformatics 2009.
+Ref: "Normalization of peak intensities in bottom-up MS-based proteomics
+      using singular value decomposition" Karpievitch YV, Taverner T et al.
+      2009, Bioinformatics
 Ref:  "Metabolomics data normalization with EigenMS"
       Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM
       Submitted to PLoS ONE.

@@ -8,9 +8,9 @@ g.test(x, y = NULL, correct = "none", p = rep(1/length(x), length(x)))
 }
 \arguments{
 \item{x}{vector of boolean values corresponding to presence & absence
-eg: c(TRUE, TRUE, FALSE, FALSE) for present present absent absent values
-Order of TRUE/FALSE does not matter, can be used interchangeably.
-Same length as parameter y}
+eg: c(TRUE, TRUE, FALSE, FALSE) for present present absent absent
+values. Order of TRUE/FALSE does not matter, can be used
+interchangeably. Same length as parameter y}
 
 \item{y}{vector treatments (factor) corresponding to values in x,
 same length as x

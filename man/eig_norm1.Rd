@@ -54,12 +54,12 @@ A structure with multiple components
 First portion of EigenMS: Identify eigentrends attributable to bias, allow
 the user to adjust the number (with causion! if desired) before normalizing
 with eig_norm2.
-Ref: "Normalization of peak intensities in bottom-up MS-based proteomics using
-      singular value decomposition" Karpievitch YV, Taverner T, Adkins JN,
-      Callister SJ, Anderson GA, Smith RD, Dabney AR. Bioinformatics 2009
+Ref: "Normalization of peak intensities in bottom-up MS-based proteomics
+      using singular value decomposition" Karpievitch YV, Taverner T, et al.
+      2009, Bioinformatics
 Ref:  "Metabolomics data normalization with EigenMS"
-      Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM
-      Submitted to PLoS ONE
+      Karpievitch YK, Nikolic SB, Wilson R, Sharman JE, Edwards LM 2014,
+      PLoS ONE
 }
 \examples{
 data(mm_peptides)

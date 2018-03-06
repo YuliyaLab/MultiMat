@@ -16,14 +16,14 @@ Used to generate formula and contrasts for lm().}
 \value{
 data structure with linea model formula and contrasts
  \describe{
-  \item{lm.formula}{Lienar model formula suitable for right hand side of '~' in lm(),
-       '~ is not included int eh formula}
+  \item{lm.formula}{Lienar model formula suitable for right hand side of '
+        ~' in lm(), ~ is not included int eh formula}
   \item{lm.params}{contrasts for lm(), here sum-to-zero constraint only}
 }
 }
 \description{
-Makes a string linear model formula suitable for the right hand side of the equasion
-passed into lm()
+Makes a string linear model formula suitable for the right hand side of the
+equasion passed into lm()
 }
 \details{
 eig_norm1 and eig_norm2
