@@ -22,6 +22,7 @@ Compute PI - proportion of observations missing completely at random
 }
 \examples{
 data(mm_peptides)
+intsCols = 8:13
 metaCols = 1:7
 m_logInts = make_intencities(mm_peptides, intsCols)
 m_prot.info = make_meta(mm_peptides, metaCols)

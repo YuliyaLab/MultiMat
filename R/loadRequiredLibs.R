@@ -9,7 +9,7 @@ devtools::use_package("multtest")
 devtools::use_package("readr")
 
 
-#' @import gdata ggplot2 ggrepel gtools multtest readr stats
+#' @import gdata ggplot2 ggrepel gtools multtest readr
 #' @importFrom dplyr mutate
 #' @importFrom dplyr filter
 #' @importFrom biomaRt useMart

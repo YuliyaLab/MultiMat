@@ -286,6 +286,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
 #' Contributed by Shelley Herbrich & Tom Taverner for Karpievitch et al. 2009
 #' @examples
 #' data(mm_peptides)
+#' intsCols = 8:13
 #' metaCols = 1:7
 #' m_logInts = make_intencities(mm_peptides, intsCols)
 #' m_prot.info = make_meta(mm_peptides, metaCols)
