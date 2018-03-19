@@ -393,9 +393,9 @@ get1sttokenPlus = function(ids)
 }
 
 
-# function takes a vector of string Protein IDs possibly separated by a ';'
-# and returns a vector of the same lenfth with the first gene ID
-# with a '+' if more than 1 gene ID was present
+# function takes a vector of string Protein IDs
+# and removes any -2 from the end of the protein name
+# input is one protein per row
 clip_protID_end = function(ids){
   ll = length(ids)
   prots = vector('character', length = ll)
