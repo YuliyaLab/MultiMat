@@ -50,6 +50,9 @@ from multiple peptides within a protein
 Expects the data to be filtered to contain
 at least one observation per treatment
 group.
+For experiments with lower overall abundaneces such as multiplexed
+experiments check if the imputed value is below 0, if so value is reimputed
+untill it is above 0.
 }
 \examples{
 data(mm_peptides)

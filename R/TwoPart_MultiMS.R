@@ -553,18 +553,10 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
   colnames(BHPV) = col_BHPV
   colnames(NUMPEP) = col_NUMPEP
 
-  sum_tstat = rowSums(tstat) # check that correctly summed over columns
-  # Generate nperm permumations
-  # perm_labels <- mt.sample.label(treat,test="t.equalvar",
-  #                                fixed.seed.sampling="y",B=nperm)
-  # PermT <- sapply(1:n.perm, function(x) CalcT(data, groups=Perms[x,]))
-  # generate 3 permutation-based tstat dataframes
+  sum_tstat = rowSums(tstat)
 
   print('Perfoming permutation test')
-  ## # Calculate p-value based on permutation null distribution
-  ## T.Pvalue = sapply(1:npepts,
-  ##          function(x) (0.5+sum(abs(PermT[x,]) >= abs(Tstat[x])))/(n.perm+1))
-  # cannot do sapllay, our test is more complicated on peptide level
+
   tstat_perm = list()
   for(ii in seq(1,nsets)) {
     print(paste('Dataset', as.character(ii) ) )
@@ -596,7 +588,6 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
     if(ii == 1) {
       ppos = which(pos_stat_pos)
       for(kk in seq(1,length(ppos))) {
-        # (0.5+sum(PermTSq[x,] >= TstatSq[x]))/(n.perm+1)
         p_vals[ppos[kk]] = (.5+sum(T_perm[ppos[kk],] >=
                                      sum_tstat[ppos[kk]])) / (nperm+1)
       }
@@ -717,7 +708,7 @@ prot_level_multi_part = function(mm_list, treat, prot.info,
 #' @export
 peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
   #   XsqDE (degrees of freedom) -- not used, place holder for where
-    # FC goes in abundace-based DE
+  #   FC goes in abundace-based DE
   #   p-value for comparison between 2 groups (2 groups only here)
   #      as interested in pariwise differences.
   #   BH-adjusted p-value, Benjamini-Hochberg multiple testing adjustment
@@ -737,7 +728,6 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
   de_ret = NULL
   u_prot_info = NULL
   for (kk in seq(1,length(all.proteins))) {
-    #if(kk == 4) browser()
     prot = all.proteins[kk]
     pmid.matches = prot.info[prot.info[,pr_ppos]==prot,1]
     curr_prot.info = prot.info[prot.info[,pr_ppos]==prot,]
@@ -767,8 +757,6 @@ peptideLevel_PresAbsDE = function(mm, treatment, prot.info, pr_ppos=2){
     treatsX = unique(treatment)
     if(sum(xx) < nn & sum(xx) > 0) {
       res = g.test(xx,treatment)
-      # colnames(y_out) = c('XsqDF', 'p-val', 'BH_p-val',
-      # 'g_value', 'num_peptides')
       y_out[kk,2] = res$p.value
       y_out[kk,1] = res$parameter
       y_out[kk,4] = res$statistic
@@ -968,12 +956,9 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   ttt = tt == prot_col_name
   # should be position of the column that was passed in for ID
   pos_prot_id_col = seq(1,length(tt))[ttt]
-  # mmsCA[[1]], treatsCA[[1]], protinfos[[1]], pr_ppos=2)
   tmp = peptideLevel_PresAbsDE(sub_mm_list[[1]],
                                treat[[1]], sub_prot.info[[1]],
                                pr_ppos=pos_prot_id_col)
-  # tmp = peptideLevel_DE(sub_mm_list[[1]], treat[[1]],
-  # sub_prot.info[[1]], pr_ppos=2)
   tstat_all = list()
   tstat_all[[1]] = tmp
   # t_value si stored in col 5:  ProtID  FC  p-val
@@ -992,15 +977,10 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   PROTIDS = tmp[,1] # ??
   # prot names will be the same, will not combine them in the loop
   for(ii in 2:nsets){ # for second and more datasets
-      # mmsCA[[1]], treatsCA[[1]], protinfos[[1]], pr_ppos=2)
     tmp = peptideLevel_PresAbsDE(sub_mm_list[[ii]],
                                  treat[[ii]],
                                  sub_prot.info[[ii]],
                                  pr_ppos=pos_prot_id_col)
-    # peptideLevel_PresAbsDE(sub_mm_list[[ii]],
-    #      treat[[ii]], sub_prot.info[[ii]], pr_ppos=2)
-    # tmp = peptideLevel_DE(sub_mm_list[[ii]],
-    #      treat[[ii]], sub_prot.info[[ii]], pr_ppos=2)
     tstat_all[[ii]] = tmp
     # yuliya: may need to subset here, tmp is complex var
     tstat = cbind(tstat, as.double(tmp[,5]))
@@ -1008,7 +988,6 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
     PV =  cbind(PV, tmp[,3])
     BHPV = cbind(BHPV, tmp[,4])
     NUMPEP = cbind(NUMPEP, tmp[,6])
-    # NUMMISS = data.frame(NUMMISS, as.matrix(tmp$nummiss))
 
     col_FC = c(col_FC, paste('FC_', dataset_suffix[ii], sep=''))
     col_PV = c(col_PV, paste('PV_', dataset_suffix[ii], sep=''))
@@ -1022,24 +1001,18 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   sum_tstat = rowSums(tstat) # check that correctly summed over columns
 
   print('Perfoming permutation test')
-  ## # Calculate p-value based on permutation null distribution
-  ## T.Pvalue = sapply(1:npepts,
-  ##    function(x) (0.5+sum(abs(PermT[x,]) >= abs(Tstat[x])))/(n.perm+1))
-  # cannot do sapllay, our test is more complicated on peptide level
+
   tstat_perm = list()
   for(ii in seq(1,nsets)) {
     print(paste('Dataset', as.character(ii) ) )
     tstat_perm[[ii]] = NULL
     for(jj in seq(1,nperm)) {
       # get permuted labels for each iteration, then compute T_p
-        #  sub_mm_list[[1]], treat[[1]], sub_prot.info[[1]], pr_ppos=2)
       perm_pos = sample(length(treat[[ii]]), length(treat[[ii]]) )
       tmp = peptideLevel_PresAbsDE(sub_mm_list[[ii]],
                                    treat[[ii]][perm_pos],
                                    sub_prot.info[[ii]],
                                    pr_ppos=2)
-      # tmp = peptideLevel_DE(sub_mm_list[[ii]],
-      # treat[[ii]][perm_pos], sub_prot.info[[ii]], pr_ppos=2)
       if(jj == 1) {
         tstat_perm[[ii]] =  as.matrix(as.double(tmp[,5]))
       } else {
@@ -1061,10 +1034,8 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   for(ii in seq(1,num_prot)) { # positive and negative values separately
     if(ii == 1) {
     p_vals[ii] = (.5+ sum(T_perm[ii,] >= sum_tstat[ii])) / (nperm+1)
-    #if(ii == 1) { If was comment out
       ppos = which(pos_stat_pos)
       for(kk in seq(1,length(ppos))) {
-        # (0.5+sum(PermTSq[x,] >= TstatSq[x]))/(n.perm+1)
         p_vals[ppos[kk]] = (.5+ sum(T_perm[ppos[kk],] >=
                                       sum_tstat[ppos[kk]])) / (nperm+1)
       }
@@ -1087,9 +1058,6 @@ prot_level_multiMat_PresAbs = function(mm_list, treat, prot.info, prot_col_name,
   # Here we return BH adjusted p-values which we do not
   # recommend using unless the number
   # of tests performed is in teh thoughsands.
-  ## mmin = min(p_vals)
-  ## mmax = max(p_vals)
-  ## adj_PV = (p_vals - mmin) / (mmax-mmin)
   adj_PV = stats::p.adjust(p_vals, method = 'BH')
   FC = rowMeans(FCs)
 
@@ -1225,9 +1193,6 @@ subset_proteins = function(mm_list, prot.info, prot_col_name) {
       common_list = intersect(common_list,uprots[[ii]])
     }
   }
-  # length(common_list) #
-  # length(uprots[[1]]) # Mouse
-  # length(uprots[[2]]) # Human
 
   # subset each experiment matrix to the proteins
   # that are in ALL of the datasets/experiment

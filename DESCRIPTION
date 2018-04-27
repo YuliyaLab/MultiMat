@@ -1,7 +1,7 @@
 Package: MultiMat
 Type: Package
 Title: Multi matrix analysis of multiple proteomics datasets on peptide level
-Version: 0.99.5
+Version: 0.99.6
 Author: Yuliya V Karpievitch
 Maintainer: Yuliya V Karpievitch <yuliya.k@gmail.com>
 Description: MultiMat is a statistical method to perform model-based peptide-level 
@@ -23,7 +23,8 @@ Imports: dplyr,
     ggrepel,
     gtools,
     multtest,
-    readr
-biocViews: MassSpectrometry, Proteomics, Normalization
+    readr,
+    imager
+biocViews: MassSpectrometry, Proteomics, Normalization, DifferentialExpression
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr

@@ -117,7 +117,6 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
   d = svdr$d
   ss = d^2
   Tk = signif(ss/sum(ss)* 100, 2)
-  #  pe = signif(d/sum(d, na.rm=T)*100, 2)
   titles = paste("Trend ", pos1:(pos1+3),
                  " (", Tk[pos1:(pos1+3)], "%)", sep = "")
   do.text = function(j) graphics::mtext(titles[j], cex=0.7, padj=-0.7, adj=1)
@@ -140,19 +139,6 @@ plot.eigentrends.start = function(svdr, title1, pos1=1){
   graphics::abline(h=0, lty=3)
   return(Tk)
 }
-
-# # not used in EigenMS
-# make.formula.string = function(factors, do.interactions=FALSE){
-#   fs = "1"
-#   if(length(factors)){
-#     fs = paste(factors, collapse=" + ")
-#     if(do.interactions && length(factors) > 1)
-#       fs = paste(unlist(lapply(as.data.frame(t(combinations(length(factors),
-#                                2, factors)), stringsAsFactors=F),
-#                                paste, collapse="*")), collapse = " + ")
-#   }
-#   return(fs)
-# }
 
 
 
@@ -357,8 +343,8 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   print('Treatment groups:')
   print(grp)
 
-  for(ii in 1:nrow(m)) {
-    for(jj in seq(1, length(unique(grp))) ) {
+  for(ii in seq_len(nrow(m) ) ) {
+    for(jj in seq_len(length(unique(grp))) ) {
         # total number of groups num(g1) * num(g2) * ...
       nobs[ii,jj] = sum(!is.na(m[ii, grp==unique(grp)[jj]]))
     }
@@ -374,8 +360,7 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   # 'present' are names of the peptides (pepID) and 'pres' are abundances
   # NOTE: ! negates the proteins, so we get ones that have 1+ obs in each group
   present = prot.info[which(!prot.info[,1] %in% rownames(pmiss)), ] #rownames OK
-  # pres = m[which(!rownames(m) %in% rownames(pmiss)), ]
-  pres = m[which(!prot.info[,1] %in% rownames(pmiss)), ] # is this OK?
+  pres = m[which(!prot.info[,1] %in% rownames(pmiss)), ]
   rownames(pres) = prot.info[which(!prot.info[,1] %in% rownames(pmiss)),1]
 
   print('Selecting complete peptides')
@@ -384,7 +369,6 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   nobs = array(NA, nrow(pres)) # reassign noobs to dims of 'present'
   numiter = nrow(pres)
   for (ii in seq(1, numiter) ) {
-    # if(ii %% 100 == 0) { print(ii) }
     nobs[ii] = sum(!is.na(pres[ii,]))
   }
 
@@ -440,7 +424,6 @@ eig_norm1 = function(m, treatment, prot.info, write_to_file=''){
   # residuals are centered around 0, here center samples not
   # peptides/metabolites centering is basic normalization
 
-  # t(scale(t(R.c), center = TRUE, scale = FALSE))
   R.c_center = scale(R.c, center = TRUE, scale = FALSE)
   my.svd = svd(R.c_center)
   # can use wrapper below to chek if SVD has a problem...
@@ -545,8 +528,6 @@ eig_norm2 = function(rv) {
   treatment = data.frame(treatment) # does this need to be done?
   if(n.u.treatment > 1) {
     lm.fm = makeLMFormula(treatment, 'ftemp')
-    #contrasts=list(bl="contr.sum",
-    #               it="contr.sum",Pi="contr.sum", tp="contr.sum"))
     mtmp = stats::model.matrix(lm.fm$lm.formula, data=treatment,
                         eval(parse(text=lm.fm$lm.params)))
   } else {  # have 1 treatment group
@@ -698,7 +679,6 @@ sva.id = function(dat, n.u.treatment, lm.fm, B=500, sv.sig=0.05, seed=NULL)
 
 
   if(!is.null(seed))  { set.seed(seed) }
-  # warn = NULL # def. not used # tim
   n = ncol(dat)
 
   ncomp = n.u.treatment # JULY 2013: as.numeric(n.u.treatment)
@@ -731,11 +711,6 @@ print("Starting Bootstrap.....")
   for(ii in seq(1, B)) {
     if(ii %% 50 == 0) { print(paste('Iteration ', ii)) }
     res0 = t(apply(res, 1, sample, replace=FALSE)) # regression
-    # yuliya: not sure if this is needed at all
-    # not needed for 1 group normalizaiton
-    ##### res0 = res0 - t(H %*% t(res0))
-    # yuliya: Sept 3, 2014: REMOVED above line.
-    #  Do not think this needs to be done..
     # center each peptide around zero (subtract its mean across samples)
     # note: we are not changing matrix itself, only centerig what we pass to svd
     res0_center = t(scale(t(res0), center = TRUE, scale = FALSE))
@@ -752,7 +727,6 @@ print("Starting Bootstrap.....")
 # yuliya: check p-values here, Tom had mean value...
   psv = rep(1,n)
   for(ii in seq(1,ndf)) {
-	  # psv[ii] = mean(dstat0[,ii] >= dstat[ii])
     # should this be compared to a MEAN?  Should this be dstat0[ii,] ?
     posGreater = dstat0[,ii] > dstat[ii]
     psv[ii] = sum(posGreater) / B
@@ -762,13 +736,10 @@ print("Starting Bootstrap.....")
   # set equal to previous one if not the case
   for(ii in 2:ndf){
     if(psv[(ii-1)] > psv[ii]) {
-	    # psv[ii] = max(psv[(ii-1)],psv[ii]) # alternative, more steps
       psv[ii] = psv[(ii-1)]
     }
   }
   nsv = sum(psv <= sv.sig)
-  # tom - this should be at least 1
-  # nsv = min(sum(psv <= sv.sig), 1, na.rm=T)
   return(list(n.sv = nsv,p.sv=psv))
 }
 # end sva.id

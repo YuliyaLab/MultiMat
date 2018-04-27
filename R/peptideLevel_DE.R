@@ -90,9 +90,6 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
       # replicate treatment for # peptides
       treatment_hold = treatment
       treatment = rep(treatment, times=n.peptide)
-      # res = lm(yy ~ treatment + peptide,
-      # contrasts = list(treatment="contr.sum", peptide="contr.sum") )
-      # baseline grp = 1st in aphanumeric order
       res = stats::lm(yy ~ treatment + peptide,
                       contrasts = list(peptide="contr.sum"))
       res1 = summary(res) # above line only good for 2 groups?
@@ -100,13 +97,12 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
       y_out[kk,c(1,2,4)] = stats::coefficients(res1)[2,c(1,4,3)]
       treatment = treatment_hold
     } else {
-      # res =  lm(yy~treatment, contrasts=list(treatment="contr.sum"))
       res =  stats::lm(yy~treatment) # only good for 2 groups?
       res1 = summary(res)
       # col 3 reserved for BH p-values
       y_out[kk,c(1,2,4)] = stats::coefficients(res1)[2,c(1,4,3)]
     }                      # coefs, p-value, t-value
-  } #end for each protein
+  } # end for each protein
 
   colnames(y_out) = c('FC', 'P_val', 'BH_P_val', 'statistic', 'num_peptides')
   # BH adjustment
@@ -114,7 +110,7 @@ peptideLevel_DE = function(mm, treatment, prot.info, pr_ppos=2)
 
   # add protein names as 1st col in a data frame
   DE_res = data.frame(all.proteins, y_out, stringsAsFactors=FALSE)
-  de_ret$DE_res = DE_res # data.frame(DE_res, stringsAsFactors=FALSE)
+  de_ret$DE_res = DE_res
   de_ret$prot.info = u_prot_info
 
   cols1 = colnames(de_ret$DE_res)
@@ -182,7 +178,6 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
                                     prot_to_plot_col,
                                     gene_name, gene_name_col, mylabs) {
   graphics::par(mfcol=c(1,3))
-  # ppos = sorted_prot.info[,2] == 'O15233'  #  Q6QHH9 Q7Z384
   ppos = imp_prot.info[,prot_to_plot_col] == prot_to_plot
   tmp = imp_mm[ppos,]
   if(sum(ppos) == 1) { # only 1 row, duplicate 1 row...
@@ -204,12 +199,6 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
   # print(paste(myylim, sep=' '))
   main_title = paste(gene_name, ' (',
                      prot_to_plot, ') Normalized & Imputed', sep='')
-
-  # outfnames_png = paste(gene_name, '_',
-  #      prot_to_plot, '_3pepTrends.png',sep='')
-  # paste(imageoutdir, '/', alldirnames[ii], '_mC_heat_bySize.png', sep='')
-  # png(outfnames_png, width = 20, height = 6.4, units = 'in', res = 400)
-  # R cannot figue out how & when res is specifed... (?)
   graphics::par(mfcol=c(1,3))
   graphics::par(mar=c(10,3,3,3))
   # may need to transpose ylim will be dynamically set here,
@@ -219,8 +208,6 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
   graphics::matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35))
   graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
   limits = graphics::par("usr")  # upper and low ylim and upper and lower xlim
-  limits
-  # myylim = c(limits[3]-3, limits[4])
   myxlim = c(limits[1], limits[2])
 
   ppos = sorted_prot.info[,prot_to_plot_col] == prot_to_plot  #
@@ -245,7 +232,6 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
   graphics::matpoints(t(tmp2), type="p", pch='*') # , ylim=c(15,35))
   graphics::lines(colMeans(tmp2,na.rm = TRUE), lwd=3, col='black')
   graphics::par(mar=c(3,3,3,3))
-  # dev.off()
 }
 
 
@@ -266,8 +252,6 @@ plot_3_pep_trends_NOfile = function(mm, prot.info, sorted_norm_m,
 plot_1prot = function(mm, prot.info, prot_to_plot, prot_to_plot_col,
                            gene_name, gene_name_col, colors, mylabs) {
   graphics::par(mfcol=c(1,1))
-  #main_title = paste(gene_name, ' (', prot_to_plot,
-    # ') Normalized & Imputed', sep='')
   graphics::par(mar=c(10,3,3,3))
   ppos = prot.info[,prot_to_plot_col] == prot_to_plot
   tmp = mm[ppos,]
@@ -293,7 +277,6 @@ plot_3_peptide_trends = function(mm, prot.info, sorted_norm_m,
                                  gene_name, mylabs) {
 
   graphics::par(mfcol=c(1,3))
-    # ppos = sorted_prot.info[,2] == 'O15233'  #  Q6QHH9 Q7Z384
   ppos = imp_prot.info[,2] == prot_to_plot
   tmp = imp_mm[ppos,]
   if(sum(ppos) == 1) { # only 1 row, duplicate 1 row...
@@ -311,12 +294,9 @@ plot_3_peptide_trends = function(mm, prot.info, sorted_norm_m,
   ylim_min = min(min(tmp, na.rm=TRUE), min(tmp2, na.rm=TRUE))
   ylim_max = max(max(tmp, na.rm=TRUE), max(tmp2, na.rm=TRUE))
   myylim = c(ylim_min-.2, ylim_max+.2) # give a bit of margin
-
-print(paste(myylim, sep=' '))
   main_title = paste(gene_name, ' (', prot_to_plot,
                      ') Normalized & Imputed', sep='')
 
-  #paste(imageoutdir, '/', alldirnames[ii], '_mC_heat_bySize.png', sep='')
   outfnames_png = paste(gene_name, '_', prot_to_plot, '_3pepTrends.png',sep='')
   grDevices::png(outfnames_png, width = 20, height = 6.4, units='in', res = 400)
   # R cannot figue out how & when res is specifed... (?)
@@ -328,8 +308,6 @@ print(paste(myylim, sep=' '))
   graphics::matpoints(t(tmp), type="p", pch='*') # , ylim=c(15,35))
   graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
   limits = graphics::par("usr")  # upper and low ylim and upper and lower xlim
-  limits
-  # myylim = c(limits[3]-3, limits[4])
   myxlim = c(limits[1], limits[2])
 
   ppos = sorted_prot.info[,2] == prot_to_plot  #
@@ -344,7 +322,6 @@ print(paste(myylim, sep=' '))
           ylim=myylim, xlim=myxlim, xaxt = "n") # may need to transpose
   graphics::axis(1, at=seq(1,length(mylabs)), labels=mylabs)
   graphics::matpoints(t(tmp), type="p", pch='*')
-  # , ylim=c(15,35)) # may need to transpose
   graphics::lines(colMeans(tmp,na.rm = TRUE), lwd=3, col='black')
 
 
@@ -365,7 +342,6 @@ get1sttoken = function(ids)
   ll = length(ids) # 22780
   prots = NULL
   for(ii in seq(1,ll)) {
-    # if(ii %/% 1000 != 0) { print(ii) }
     tt_spl = strsplit(ids[ii], ';')
     prots = c(prots, c(tt_spl[[1]][1]))
   }
@@ -381,7 +357,6 @@ get1sttokenPlus = function(ids)
   ll = length(ids)
   prots = NULL
   for(ii in seq(1,ll)) {
-    # if(ii %/% 1000 != 0) { print(ii) }
     tt_spl = strsplit(ids[ii], ';')
     tt = tt_spl[[1]][1]
     if(length(tt_spl[[1]]) > 1) {
@@ -422,14 +397,14 @@ remove_contaminats_symbol = function(dd, colsCheck = c('Reverse',
                                      colsCheckSymbol=c('+', '+') )
 {
   # get column indeces for the specified column names,
-    # eg: 'Reverse' and 'Potential.contaminant'
+  # eg: 'Reverse' and 'Potential.contaminant'
   # access 'dd' by the column index to check for '+'
   cols1 = colnames(dd)
   ll = length(colsCheck)
   for(ii in seq(1,ll)) {
     ppos = cols1 == colsCheck[ii]
     # position of the column we need to check
-    colToCheck = seq(1:length(cols1))[ppos]
+    colToCheck = seq(1,length(cols1))[ppos]
     tt1 = dd[,colToCheck] == '+'
     print(paste('Removing ', sum(tt1), 'rows via ', colsCheck[ii], 'column') )
     dd = dd[!tt1,]
@@ -449,15 +424,15 @@ remove_contaminats_prefix = function(dd,
                                      colsCheckPrefix=c('REV_', 'CON_') )
 {
   # get column indeces for the specified column names,
-    # eg: 'Reverse' and 'Potential.contaminant'
+  # eg: 'Reverse' and 'Potential.contaminant'
   # access 'dd' by the column index to check for matches
-    # to the prefix in the protein names
+  # to the prefix in the protein names
   cols1 = colnames(dd)
   ll = length(colsCheck)
   for(ii in seq(1,ll)) {
     ppos = cols1 == colsCheck[ii]
     # position of the column we need to check
-    colToCheck = seq(1:length(cols1))[ppos]
+    colToCheck = seq(1,length(cols1))[ppos]
     ppos1 = startsWith(as.character(dd[,colToCheck]), colsCheckPrefix[ii])
     print(paste('Removing ', sum(ppos1), 'rows via ', colsCheck[ii], 'column'))
     dd = dd[!ppos1,]
@@ -481,7 +456,7 @@ generate_single_geneID = function(dd, colCheck)
 
 
 # in case of ProtID column having -2 appended to the protein name
-#(or any other -#), eg: Q86U42-2
+# (or any other -#), eg: Q86U42-2
 # take the portion prior to -# and make it the ProtID column,
 # store original ProtID column in GeneIDLong
 # If there is not -2 or other number following the protein name,
@@ -538,7 +513,7 @@ remove_dup_geneIDs = function(db)
     ppos_protid = cur_gene$ProtID != ''
     if(sum(ppos_protid) > 1) {
       # keep the bottm row - in our dataset we get
-        # that as Leading Razor Protein...
+      # that as Leading Razor Protein...
       undup_db = rbind(undup_db,cur_gene[2,])
       # http://www.enzolifesciences.com/ADI-SPP-502/hsp70-a1-mouse-recombinant/
     } else {
@@ -595,7 +570,7 @@ get_EnsIDs = function(organizm='human') {
   gene_symbol = lookup[lookup_pos,3]
   res = biomaRt::getBM(attributes=c(gene_symbol, 'uniprotswissprot',
                                     'ensembl_gene_id'),
-              mart=ensembl)
+                       mart=ensembl)
   dim(res)  # human: 37593
   colnames(res) = c('GeneID', 'ProtID', 'EnsID')
 
@@ -604,7 +579,6 @@ get_EnsIDs = function(organizm='human') {
   ppos = res$ProtID == ''
   sum(ppos) # 16509
   res = res[!ppos,]
-
   ens_ids = make_ID_structure(res)
 
   return(ens_ids)
@@ -619,9 +593,8 @@ get_EnsIDs = function(organizm='human') {
 match_linker_ids = function(dd1,  linker, l_col) {
   ll1 = length(dd1$EnsID) # 19086
   ll1
-  match1 = vector(mode="list", length=ll1) # vector('numeric', length=ll1)
+  match1 = vector(mode="list", length=ll1)
   for(ii in seq(1,ll1)) {
-    # if(ii == 17 | ii == 18) { browser() }
     if(ii%%100 == 0) { print(paste('Processing Gene', as.character(ii) ) ) }
     ppos = linker[,l_col] %in% dd1$EnsID[[ii]]
     match1[[ii]] = unique(linker[ppos,-l_col])

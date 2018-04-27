@@ -15,6 +15,9 @@
 #' Expects the data to be filtered to contain
 #' at least one observation per treatment
 #' group.
+#' For experiments with lower overall abundaneces such as multiplexed
+#' experiments check if the imputed value is below 0, if so value is reimputed
+#' untill it is above 0.
 #'
 #' @param mm number of peptides x number of samples matrix of intensities
 #' @param treatment vector indicating the treatment group of each sample eg
@@ -92,7 +95,6 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
   cat("Imputing...\n")
 
   for (kk in seq(1,length(all.proteins))) {
-    #if(kk == 191) browser()
     prot = all.proteins[kk]
     pmid.matches = prot.info[prot.info[,pr_ppos]==prot,1]
 
@@ -102,7 +104,6 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     y_raw = mm[idx.prot,,drop=FALSE]
     cat(paste("Protein: ", prot, ": ", dim(y_raw)[1],
               " peptides (", kk, "/", length(all.proteins), ")", sep="" ))
-    # y_info = prot.info[idx.prot,,drop=FALSE] # def. not used #tim
 
     # yuliya: this should not happen here (NO observations)
     if (nrow(y_raw) == 0) next
@@ -134,12 +135,11 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
 
     # keep track of pepIDs and prIDs here...
     if (nrow(y_raw) == 0) next
-    # c.guess = min(yy, na.rm=TRUE) # def. not used #tim
 	  peptide = rep(seq(1,n.peptide), each=dim(data.frame(treatment))[1])
 
     # make column names for the n.present matrix
     tmp = unique(treatment)
-    # yuliya: this does not work if a factor!!
+    # yuliya: this does not work if a factor
     nrow_tmp = dim(tmp)[1]
     # R does not remove the variable col_names1 from name
     # space outside of the if/else..
@@ -247,21 +247,24 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
     choose.cen = stats::runif(nn) < prob.cen
     set.cen = is.na(yy) & choose.cen
     set.mar = is.na(yy) &! choose.cen
-    # kappa = my.pi + (1 - my.pi) * stats::dnorm(zeta,0, 1) # def. not used
 
     # Imputation: Replace missing values with random numbers
-    #             drawn from the estimated
-    # likelihood model
+    #             drawn from the estimated likelihood model
     sigma = 1/dd
     y.impute = t(y_raw)
-    if(sum(set.cen) > 0) # censored
+    if(sum(set.cen) > 0) { # censored
       mus = y.predict[set.cen]
       ss = sigma[set.cen]
       cutoff = c_h[set.cen] # rep(c.guess, nn)[set.cen]
-      y.impute[set.cen] = rnorm.trunc(sum(set.cen), mus, ss, hi=cutoff)
-
-    if(sum(set.mar) > 0) # randomly missing
-      y.impute[set.mar] = stats::rnorm(nn, y.predict, sigma)[set.mar]
+      # Apri 9, 2018 - added lo=0 cutoff, truncated normal at both ends
+      y.impute[set.cen] = rnorm.trunc(sum(set.cen), mus, ss, lo=0, hi=cutoff)
+    }
+    if(sum(set.mar) > 0) { # randomly missing
+      # Apri 9, 2018 - added lo=0 cutoff, truncated normal at 0
+      # mainly for multiplexed experiments where abundances may be lower
+      # y.impute[set.mar] = stats::rnorm(nn, y.predict, sigma)[set.mar]
+      y.impute[set.mar] = rnorm.trunc(sum(set.mar), y.predict, ss, lo=0)
+    }
 
     y.impute.return = t(y.impute)
     imp_prot.info = rbind(imp_prot.info,curr_prot.info)
@@ -274,6 +277,7 @@ MBimpute = function(mm, treatment, prot.info, pr_ppos=2, my.pi=0.05,
               imp_prot.info=imp_prot.info,pi=as.matrix(my.pi)))
 }
 ############# end imputation ###################
+
 
 ############## function pi #############
 #' Compute PI - proportion of observations missing completely at random
@@ -347,7 +351,7 @@ protein_var = function(Y_raw, treatment){
   n = length(y)
   n.treatment = length(treatment)
   n.u.treatment = length(unique(treatment))
-  peptide = rep(seq(1:n.peptide), each=n.treatment)
+  peptide = rep(seq(1, n.peptide), each=n.treatment)
 
   n.present = array(NA, c(n.peptide, n.u.treatment))
   colnames(n.present) = unique(treatment)
@@ -357,8 +361,6 @@ protein_var = function(Y_raw, treatment){
                                           treatment==unique(treatment)[j]]))
       }
   }
-
-  # peptides.missing = rowSums(is.na(Y_raw)) # def. not used #tim
 
   f.treatment = factor(rep(treatment, n.peptide)) # used in model.matrix below
   f.peptide = factor(peptide) #  used in stats::model.matrix below
@@ -387,12 +389,10 @@ protein_var = function(Y_raw, treatment){
   beta = drop(solve(t(X.c) %*% X.c) %*% t(X.c) %*% y.c)
   Y_hat = X.c %*% beta
   Y_temp = Y_raw
-  # Y_temp = as.numeric(t(Y_temp))
   Y_temp = as.vector(t(Y_temp)) # yuliya, same as in filter now
   Y_temp[!is.na(Y_temp)] = Y_hat
   Y_temp = matrix(Y_temp, nrow = n.peptide, byrow = TRUE)
   Y_hat = Y_temp
-  # ee = Y_raw - Y_hat # def. not used #tim
 
   effects = X.c %*% beta
   resid = y.c - effects
@@ -412,8 +412,9 @@ my.Psi.dash = function(x, my.pi){
 
 phi = function(x){stats::dnorm(x)}
 
+# rnorm.trunc(sum(set.cen), mus, ss, hi=cutoff)
 rnorm.trunc = function (n, mu, sigma, lo=-Inf, hi=Inf){
-# Calculates truncated noraml
+# Calculates truncated normal
   p.lo = stats::pnorm(lo, mu, sigma)
   p.hi = stats::pnorm(hi, mu, sigma)
   u = stats::runif(n, p.lo, p.hi)
