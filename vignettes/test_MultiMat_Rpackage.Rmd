@@ -51,22 +51,24 @@ Alternatively MultiMat can be installed from GitHub:
 
 # MultiMat Analysis Pipeline
 
-MultiMat Pipeline includes six steps, which we suggest are performed in the order
-shown in the flowchart in Figure 1. Individual steps such as normalization, 
-imputation or presence/absence analysis can be skipped but care must be taken 
-to assure that peptides passed into Model-Based Differential Expression Analysis 
-step contain a sufficient number of observations. 
+MultiMat Pipeline includes six steps, which we suggest are performed in the 
+following order:
+
+\newline
+
+Load Data -> EigenMS Normalization -> Model-Based Imputation -> 
+Model-Based Differential Expression Analysis & Presence/Absence Analysis ->
+Visualization & Table Output.
+
+\newline
+
+Individual steps such as normalization, imputation or presence/absence analysis 
+can be skipped but care must be taken to assure that peptides passed into 
+Model-Based Differential Expression Analysis step contain a sufficient number of observations. 
 
 The example we provide in this tutorial follows the suggested  MultiMat Analysis 
 outline in Figure 1 with additional data visualization that we find useful in 
-proteomics data analysis. 
-
-```{r}
-flowchart = imager::load.image('./MultiMatPipelineFlowChart.jpeg')
-plot(flowchart, axes=FALSE)
-```
-
-**Figure 1. Flow chart of the suggested MultiMat analysis pipeline.** 
+proteomics data analysis.  
 
 \newline
 
@@ -130,7 +132,7 @@ barplot(colSums(is.na(m_logInts)),
         main="Numbers of missing values in Human samples (group order)")
 ```
 
-**Figure 2. Numbers of missing values in each of the Human samples.** 
+**Figure 1. Numbers of missing values in each of the Human samples.** 
 mCG treatment group has more missing values. 
 
  
@@ -140,7 +142,7 @@ mCG treatment group has more missing values.
 hs_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
 ```
 
-**Figure 3. Eigentrends for raw and residual peptide intensities in Human samples.** 
+**Figure 2. Eigentrends for raw and residual peptide intensities in Human samples.** 
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Raw Data 
 (left panel) shows a pattern representative of the differences between the two 
 groups. Top trend in the Residual Data (right panel) shows that sample 2 and 5 
@@ -162,7 +164,7 @@ hs_m_ints_eig1$h.c # 1
 hs_m_ints_norm_1bt = eig_norm2(rv=hs_m_ints_eig1) 
 ```
 
-**Figure 4. Eigetrends for raw and normalized peptide intensities in Human samples.** 
+**Figure 3. Eigetrends for raw and normalized peptide intensities in Human samples.** 
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalized 
 Data (right panel) shows a pattern representative of the differences between the 
 two groups (eigen trends can be rotated around the x-axis). There is a 15% 
@@ -191,7 +193,7 @@ hs_m_ints_norm = eig_norm2(rv=hs_m_ints_eig1)
 # names(hs_m_ints_norm) 
 ```
 
-**Figure 5. Eigetrends for raw and normalized peptide intensities in Human 
+**Figure 4. Eigetrends for raw and normalized peptide intensities in Human 
 samples with the effects of two bias trends removed.** Dots at positions 1-6 
 correspond to the 6 samples. Top trend in the Normalized Data (right panel) 
 shows a pattern representative of the differences between the two groups 
@@ -244,7 +246,7 @@ barplot(colSums(is.na(m_logInts)),
 ```
 
 
-**Figure 6. Numbers of missing values in each of the Human samples.** 
+**Figure 5. Numbers of missing values in each of the Human samples.** 
 mCG treatment group has more missing values. 
 
 
@@ -252,7 +254,7 @@ mCG treatment group has more missing values.
 mm_m_ints_eig1 = eig_norm1(m=m_logInts,treatment=grps,prot.info=m_prot.info)
 ```
 
-**Figure 7. Eigentrends for raw and residual peptide intensities in mouse samples.** 
+**Figure 6. Eigentrends for raw and residual peptide intensities in mouse samples.** 
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalized 
 Data (right panel) shows a pattern representative of the differences between the 
 two groups (eigen trends can be rotated around x-axis). 
@@ -271,7 +273,7 @@ mm_m_ints_eig1$h.c
 mm_m_ints_norm_1bt = eig_norm2(rv=mm_m_ints_eig1) 
 ```
 
-**Figure 8. Eigentrends for raw and normalized peptide intensities in mouse samples with the effects of one bias trends removed.**
+**Figure 7. Eigentrends for raw and normalized peptide intensities in mouse samples with the effects of one bias trends removed.**
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalized 
 Data Dots at positions 1-6 correspond to the 6 samples. Top trend in the 
 Normalized Data (right panel) shows a pattern representative of the differences 
@@ -291,7 +293,7 @@ mm_m_ints_norm = eig_norm2(rv=mm_m_ints_eig1)
 # 190 petides with no missing values were used to id bais trends ($complete)
 ```
 
-**Figure 9. Eigentrends for raw and normalized peptide intensities in mouse samples with the effects of two bias trends removed.**
+**Figure 8. Eigentrends for raw and normalized peptide intensities in mouse samples with the effects of two bias trends removed.**
 Dots at positions 1-6 correspond to the 6 samples. Top trend in the Normalized 
 Data (right panel) shows a pattern representative of the differences between 
 the two groups. 
@@ -387,7 +389,7 @@ plot_3_pep_trends_NOfile(as.matrix(hs_m_ints_eig1$m), hs_m_ints_eig1$prot.info,
                           
 ```
 
-**Figure 10. All peptides within protein Prot32 in raw, normalized, and imputed form.**  
+**Figure 9. All peptides within protein Prot32 in raw, normalized, and imputed form.**  
 
 
 ## Mouse
@@ -519,7 +521,7 @@ hist(p.adjust(comb_MBDE$P_val, method='BH'), breaks=mybreaks,
 
 ```
 
-**Figure 11. P-value distributions for unadjusted and adjusted p-values.** 
+**Figure 10. P-value distributions for unadjusted and adjusted p-values.** 
 Adjusted p-values (top right) look as expected according to the theory with 
 a peak near 0 and an approximately uniform distribution throughout the 
 interval [0 1]. Benjamini-Hochberg adjusted p-values (bottom left) do not look 
@@ -534,7 +536,7 @@ plot_volcano_wLab(comb_MBDE$FC, comb_MBDE$BH_P_val, comb_MBDE$GeneID,
                   FC_cutoff=1.2, PV_cutoff=.05, 'CG vs mCG')  
 ```
 
-**Figure 12. Distribution of p-values and fold changes for combined multi-matrix analysis of Mouse and Human.**    
+**Figure 11. Distribution of p-values and fold changes for combined multi-matrix analysis of Mouse and Human.**    
 
 ## Model-Based Differential Expression Analysis for proteins observed only in Human
 
@@ -564,7 +566,7 @@ plot_volcano_wLab(DE_mCG_CG_mm_dd$FC, DE_mCG_CG_mm_dd$BH_P_val,
                   PV_cutoff=.05, 'Mouse specific - CG vs mCG') 
 ```
 
-**Figure 13. Distribution of p-values and fold changes for differential expression analysis in Mouse.** 
+**Figure 12. Distribution of p-values and fold changes for differential expression analysis in Mouse.** 
 
 
 ```{r, results='asis', echo=FALSE}
@@ -643,7 +645,7 @@ plot_volcano_wLab(presAbs_comb$FC, presAbs_comb$BH_P_val, presAbs_comb$GeneID,
                   FC_cutoff=.5, PV_cutoff=.05, 'Combined Pres/Abs CG vs mCG') 
 ```
 
-**Figure 14. Distribution of p-values and fold changes for differential expression in the combined analysis of Human and Mouse data in CG context.**
+**Figure 13. Distribution of p-values and fold changes for differential expression in the combined analysis of Human and Mouse data in CG context.**
 
 
 ```{r}
@@ -667,7 +669,7 @@ plot_volcano_wLab(mm_presAbs$FC, mm_presAbs$BH_P_val, mm_presAbs$GeneID,
                   FC_cutoff=.5, PV_cutoff=.05, 'MM Pres/Abs CG vs mCG') 
 ```
 
-**Figure 15. Distribution of p-values and fold changes for the presence/absence 
+**Figure 14. Distribution of p-values and fold changes for the presence/absence 
 analysis in Mouse data in CG context.**
 
 ## Presence/Absence analysis for proteins found only in Human
@@ -683,7 +685,7 @@ plot_volcano_wLab(hs_presAbs$FC, hs_presAbs$BH_P_val, hs_presAbs$GeneID,
 
 ```
 
-**Figure 16. Distribution of p-values and fold changes for the presence/absence 
+**Figure 15. Distribution of p-values and fold changes for the presence/absence 
 analysis in Human data in CG context.**  
 
 \newline
